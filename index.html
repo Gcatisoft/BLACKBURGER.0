@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLACK BURGER | Catálogo</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="styles.css">
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#000000',
+            accent: '#facc15',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-primary text-white font-sans">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 w-full bg-black/80 backdrop-blur z-50">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+
+      <!-- LOGO -->
+      <span class="text-lg font-extrabold tracking-widest">
+        BLACK <span class="text-accent">BURGER</span>
+      </span>
+
+      <!-- NAV DESKTOP -->
+      <nav class="hidden md:flex gap-6 text-sm">
+        <a href="#" class="hover:text-accent">Inicio</a>
+        <a href="#menu" class="hover:text-accent">Menú</a>
+        <a href="#contacto" class="hover:text-accent">Contacto</a>
+      </nav>
+
+      <!-- BOTÓN HAMBURGUESA -->
+      <button id="btnMenu" class="md:hidden text-2xl">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+    </div>
+
+    <!-- MENÚ MOBILE DESPLEGABLE -->
+    <div id="menuMobile" class="hidden md:hidden bg-black border-t border-neutral-800 text-center">
+      <a href="#" class="block py-3 hover:text-accent">Inicio</a>
+      <a href="#menu" class="block py-3 hover:text-accent">Menú</a>
+      <a href="#contacto" class="block py-3 hover:text-accent">Contacto</a>
+    </div>
+  </header>
+
+
+  <!-- HERO -->
+  <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 pt-24 fade-in">
+    <div class="mb-6">
+      <img src="img/logo.png" alt="Logo Black Burger" class="w-32 h-32 md:w-40 md:h-40 object-contain mx-auto" />
+    </div>
+
+    <h1 class="text-4xl md:text-7xl font-extrabold tracking-widest mb-4">
+      BLACK <span class="text-accent">BURGER</span>
+    </h1>
+
+    <p class="text-gray-300 max-w-md text-sm md:text-base mb-8">
+      Hamburguesas artesanales. Sabor intenso. Experiencia premium.
+    </p>
+
+    <a href="#menu" class="bg-accent text-black px-8 py-4 rounded-full font-bold transition hover:scale-105">
+      Ver Menú
+    </a>
+  </section>
+  <!-- MENÚ -->
+  <section id="menu" class="py-20 px-4 bg-neutral-900">
+    <h2 class="text-3xl md:text-4xl font-bold text-center mb-10">
+      Nuestro <span class="text-accent">Menú</span>
+    </h2>
+<!-- Categorías -->
+<div class="flex flex-wrap justify-center gap-3 mb-12">
+
+  <button onclick="filtrarMenu('burgers', this)"
+    class="menu-btn bg-accent text-black px-5 py-2 rounded-full font-bold">
+    BURGERS
+  </button>
+
+  <button onclick="filtrarMenu('lomitos', this)"
+    class="menu-btn border border-accent px-5 py-2 rounded-full">
+    LOMITOS
+  </button>
+
+  <button onclick="filtrarMenu('pizzas', this)"
+    class="menu-btn border border-accent px-5 py-2 rounded-full">
+    PIZZAS
+  </button>
+
+  <button onclick="filtrarMenu('milanesas', this)"
+    class="menu-btn border border-accent px-5 py-2 rounded-full">
+    SÁNDWICHES MILANESAS
+  </button>
+
+  <button onclick="filtrarMenu('plato', this)"
+    class="menu-btn border border-accent px-5 py-2 rounded-full">
+    COMIDAS AL PLATO
+  </button>
+
+  <!-- NUEVAS CATEGORÍAS -->
+  <button onclick="filtrarMenu('zappings', this)"
+    class="menu-btn border border-accent px-5 py-2 rounded-full">
+    ZAPPINGS
+  </button>
+
+  <button onclick="filtrarMenu('bebidas', this)"
+    class="menu-btn border border-accent px-5 py-2 rounded-full">
+    BEBIDAS
+  </button>
+
+  <button onclick="filtrarMenu('extras', this)"
+    class="menu-btn border border-accent px-5 py-2 rounded-full">
+    EXTRAS
+  </button>
+
+</div>
+
+
+
+    <!-- Productos -->
+    <div class="max-w-3xl mx-auto space-y-6">
+      <!-- ================= BURGERS ================= -->
+
+      <!-- BURGER CLÁSICA -->
+      <div class="menu-item burgers border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">BURGER CLÁSICA</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan 120g, carne 120g, huevo, jamón, queso tybo, lechuga,
+              tomate, mayonesa y papas fritas.
+            </p>
+          </div>
+
+          <div class="prices">
+            <span><small>S</small>$7.500</span>
+            <span><small>D</small>$8.500</span>
+            <span><small>T</small>$9.500</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- BURGER PROVO -->
+      <div class="menu-item burgers border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">BURGER PROVO</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan 120g, carne 120g, huevo, Lechuga, provoleta, morrón salteado,
+              tomate y papas fritas.
+            </p>
+          </div>
+
+          <div class="prices">
+            <span><small>S</small>$7.500</span>
+            <span><small>D</small>$8.500</span>
+            <span><small>T</small>$9.500</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- BURGER DE LA CASA -->
+      <div class="menu-item burgers border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">BURGER DE LA CASA</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan 120g, carne 120g, cheddar, panceta, salsa de la casa,
+              cebolla caramelizada, barbacoa y papas fritas.
+            </p>
+          </div>
+
+          <div class="prices">
+            <span><small>S</small>$7.500</span>
+            <span><small>D</small>$8.500</span>
+            <span><small>T</small>$9.500</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- BURGER BLACK -->
+      <div class="menu-item burgers border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">BURGER BLACK</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan 120g, carne 120g, queso tybo, panceta,
+              salsa Big Master y papas fritas.
+            </p>
+          </div>
+
+          <div class="prices">
+            <span><small>S</small>$7.500</span>
+            <span><small>D</small>$8.500</span>
+            <span><small>T</small>$9.500</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- MI GUSTO CULPOSO -->
+      <div class="menu-item burgers border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">MI GUSTO CULPOSO</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan 120g, carne 120g, panceta, cheddar, huevo, queso tybo,
+              jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.
+            </p>
+          </div>
+          <div class="prices">
+            <span><small>S</small>$7.500</span>
+            <span><small>D</small>$8.500</span>
+            <span><small>T</small>$9.500</span>
+          </div>
+
+        </div>
+      </div>
+
+
+
+      <!-- ================= LOMITOS ================= -->
+
+      <div class="menu-item lomitos hidden border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">LOMITO CLÁSICO</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan, carne 200g, huevo, jamón, queso tybo, lechuga,
+              tomate, mayonesa y papas fritas.
+            </p>
+          </div>
+          <div class="text-accent font-bold text-lg whitespace-nowrap">
+            $11.000
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item lomitos hidden border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">LOMITO PROVO</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan, carne 200g, huevo, provoleta, Lechuga, morrón salteado,
+              tomate y papas fritas.
+            </p>
+          </div>
+          <div class="text-accent font-bold text-lg whitespace-nowrap">
+            $11.000
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item lomitos hidden border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">LOMITO DE LA CASA</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan, carne 200g, cheddar, panceta, salsa de la casa,
+              cebolla caramelizada, barbacoa y papas fritas.
+            </p>
+          </div>
+          <div class="text-accent font-bold text-lg whitespace-nowrap">
+            $11.000
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item lomitos hidden border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">LOMITO BLACK</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan, carne 200g, queso tybo, panceta,
+              salsa Big Master y papas fritas.
+            </p>
+          </div>
+          <div class="text-accent font-bold text-lg whitespace-nowrap">
+            $11.000
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item lomitos hidden border-b border-neutral-700 pb-5">
+        <div class="flex justify-between items-start gap-6">
+          <div class="max-w-md">
+            <h3 class="font-bold text-lg">LOMITO MI GUSTO CULPOSO</h3>
+            <p class="text-gray-400 text-sm mt-1">
+              Pan, carne 200g, panceta, cheddar, huevo, queso tybo,
+              jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.
+            </p>
+          </div>
+          <div class="text-accent font-bold text-lg whitespace-nowrap">
+            $12.000
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= PIZZAS ================= -->
+
+    <!-- PIZZA MUZZARELLA -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">PIZZA MUZZARELLA</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Salsa de tomate, muzzarella y orégano.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$12.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$7.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA DOBLE MUZZA -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">PIZZA DOBLE MUZZA</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Doble muzzarella y salsa de tomate.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$18.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$10.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA ESPECIAL -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">PIZZA ESPECIAL</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Jamón, muzzarella y aceitunas.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$15.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$8.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA FUGAZZETA -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">PIZZA FUGAZZETA</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Cebolla, muzzarella y orégano.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$13.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$7.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA NAPOLITANA -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">PIZZA NAPOLITANA</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Tomate fresco, ajo y muzzarella.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$15.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$8.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA CALABREZA -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">PIZZA CALABREZA</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Longaniza, muzzarella y aceitunas.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$15.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$8.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA CUATRO QUESOS -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">PIZZA CUATRO QUESOS</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Mezcla de quesos seleccionados.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$18.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$10.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA AMERICANA -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">PIZZA AMERICANA</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Panceta, cheddar y muzzarella.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$20.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$11.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA LOMO -->
+    <div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+      <div class="flex justify-between items-start gap-6">
+        <div class="max-w-md">
+          <h3 class="font-bold text-lg">LOMO PIZZA</h3>
+          <p class="text-gray-400 text-sm mt-1">
+            Lomo, muzzarella y salsa especial.
+          </p>
+        </div>
+        <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">C</span>$25.000
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="text-gray-400 text-xs">M</span>$15.000
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PIZZA PALMITO -->
+<div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">PIZZA PALMITO</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Palmitos, muzzarella y salsa de tomate.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">C</span>$17.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">M</span>$9.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- PIZZA CHOCLO -->
+<div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">PIZZA CHOCLO</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Choclo, muzzarella y salsa de tomate.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">C</span>$15.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">M</span>$8.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- PIZZA TERNERA -->
+<div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">PIZZA TERNERA</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Ternera, muzzarella y salsa especial.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">C</span>$17.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">M</span>$9.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- PIZZA CHAMPIÑÓN -->
+<div class="menu-item pizzas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">PIZZA CHAMPIÑÓN</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Champiñones, muzzarella y salsa de tomate.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">C</span>$17.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">M</span>$9.000
+      </span>
+    </div>
+  </div>
+</div>
+
+
+    <!-- ================= MILANESAS ================= -->
+
+<div class="menu-item milanesas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA PROVO</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Pan, carne, huevo, provoleta, Lechuga, morrón salteado,
+        tomate y papas fritas.
+      </p>
+    </div>
+    <div class="text-accent font-bold text-lg whitespace-nowrap">
+      $11.000
+    </div>
+  </div>
+</div>
+
+<div class="menu-item milanesas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA DE LA CASA</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Pan, carne, cheddar, panceta, salsa de la casa,
+        cebolla caramelizada, barbacoa y papas fritas.
+      </p>
+    </div>
+    <div class="text-accent font-bold text-lg whitespace-nowrap">
+      $11.000
+    </div>
+  </div>
+</div>
+
+<div class="menu-item milanesas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA BLACK</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Pan, carne 200g, queso tybo, panceta,
+        salsa Big Master y papas fritas.
+      </p>
+    </div>
+    <div class="text-accent font-bold text-lg whitespace-nowrap">
+      $11.000
+    </div>
+  </div>
+</div>
+
+<div class="menu-item milanesas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA MI GUSTO CULPOSO</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Pan, carne, panceta, cheddar, huevo, queso tybo,
+        jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.
+      </p>
+    </div>
+    <div class="text-accent font-bold text-lg whitespace-nowrap">
+      $12.000
+    </div>
+  </div>
+</div>
+
+<!-- ================= MILANESAS AL PLATO ================= -->
+
+<!-- MILANESA NAPOLITANA -->
+<div class="menu-item plato hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA NAPOLITANA</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Con jamón, muzzarella y salsa de tomate.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x1</span>$10.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x2</span>$16.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- MILANESA AL CABALLO -->
+<div class="menu-item plato hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA AL CABALLO</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Con huevo frito.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x1</span>$8.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x2</span>$15.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- MILANESA CON PAPAS -->
+<div class="menu-item plato hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA CON PAPAS</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Acompañada con papas fritas.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x1</span>$8.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x2</span>$15.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- MILANESA CON ENSALADA -->
+<div class="menu-item plato hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA CON ENSALADA</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Ensalada fresca de la casa.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x1</span>$8.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x2</span>$15.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- MILANESA FUGAZZETA -->
+<div class="menu-item plato hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA FUGAZZETA</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Cebolla y muzzarella.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x1</span>$8.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x2</span>$15.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- MILANESA SUIZA -->
+<div class="menu-item plato hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">MILANESA SUIZA</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        Jamón y queso fondue.
+      </p>
+    </div>
+    <div class="flex gap-4 text-accent font-bold text-sm whitespace-nowrap">
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x1</span>$8.000
+      </span>
+      <span class="flex items-center gap-1">
+        <span class="text-gray-400 text-xs">x2</span>$15.000
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ZAPPINGS ================= -->
+
+<div class="menu-item zappings hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">ZAPPING CLÁSICA</h3>
+      <p class="text-gray-400 text-sm mt-1">
+    
+      </p>
+    </div>
+
+    <div class="text-accent font-bold text-lg whitespace-nowrap">
+      $12.000
+    </div>
+
+  </div>
+</div>
+
+<div class="menu-item zappings hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">ZAPPING GUSTO CULPOSO</h3>
+      <p class="text-gray-400 text-sm mt-1">
+  
+      </p>
+    </div>
+
+    <div class="text-accent font-bold text-lg whitespace-nowrap">
+      $14.000
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= EXTRAS ================= -->
+
+<div class="menu-item extras hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">PORCIÓN DE PAPAS COMÚN</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        
+      </p>
+    </div>
+
+    <div class="text-accent font-bold text-lg whitespace-nowrap">
+      $5.000
+    </div>
+
+  </div>
+</div>
+
+<div class="menu-item extras hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-start gap-6">
+
+    <div class="max-w-md">
+      <h3 class="font-bold text-lg">PORCIÓN DE PAPAS ESPECIAL</h3>
+      <p class="text-gray-400 text-sm mt-1">
+        
+      </p>
+    </div>
+
+    <div class="text-accent font-bold text-lg whitespace-nowrap">
+      $6.500
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= BEBIDAS ================= -->
+
+<div class="menu-item bebidas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-center">
+    <h3 class="font-bold text-lg">COCA-COLA 1,5L</h3>
+    <div class="text-accent font-bold">$5.000</div>
+  </div>
+</div>
+
+<div class="menu-item bebidas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-center">
+    <h3 class="font-bold text-lg">FANTA 1,5L</h3>
+    <div class="text-accent font-bold">$5.000</div>
+  </div>
+</div>
+
+<div class="menu-item bebidas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-center">
+    <h3 class="font-bold text-lg">SPRITE 1,5L</h3>
+    <div class="text-accent font-bold">$5.000</div>
+  </div>
+</div>
+
+<div class="menu-item bebidas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-center">
+    <h3 class="font-bold text-lg">CERVEZA BRAHMA</h3>
+    <div class="text-accent font-bold">$5.500</div>
+  </div>
+</div>
+
+<div class="menu-item bebidas hidden border-b border-neutral-700 pb-5">
+  <div class="flex justify-between items-center">
+    <h3 class="font-bold text-lg">CERVEZA CORONA</h3>
+    <div class="text-accent font-bold">$7.000</div>
+  </div>
+</div>
+
+
+
+
+  </section>
+
+
+  <!-- QUIENES SOMOS -->
+  <section id="quienes-somos" class="py-20 px-4 bg-neutral-900 text-center">
+    <h2 class="text-4xl font-bold mb-6">¿Quiénes <span class="text-accent">Somos?</span></h2>
+    <p class="text-gray-400 max-w-3xl mx-auto">
+      En Black Burger creemos que una buena hamburguesa es una experiencia.
+      Trabajamos con ingredientes de primera calidad y recetas propias para
+      ofrecerte sabor real, intenso y sin vueltas.
+    </p>
+  </section>
+
+
+  <!-- CTA -->
+  <section class="py-20 text-center px-4 fade-in">
+    <h2 class="text-3xl md:text-4xl font-bold mb-4">¿Listo para pedir?</h2>
+    <p class="text-gray-400 mb-8">Hacé tu pedido directo por WhatsApp</p>
+
+    <a href="https://wa.me/5493834603097?text=Hola%20quiero%20hacer%20un%20pedido%20en%20Black%20Burger" target="_blank"
+      class="inline-block bg-accent text-black px-10 py-4 rounded-full font-bold transition hover:scale-110">
+      Hacer Pedido
+    </a>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer id="contacto" class="bg-black py-10 text-gray-400 text-sm">
+    <div class="max-w-6xl mx-auto px-4 grid gap-8 md:grid-cols-3 text-center md:text-left">
+
+      <div>
+        <h3 class="text-white font-bold mb-2">BLACK BURGER</h3>
+        <p>Hamburguesas artesanales<br>Calidad premium</p>
+      </div>
+
+      <div>
+        <h3 class="text-white font-bold mb-2">Seguinos</h3>
+        <div class="flex justify-center md:justify-start gap-6 text-2xl">
+          <a href="#" class="hover:text-accent"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="hover:text-accent"><i class="fa-brands fa-facebook"></i></a>
+          <a href="#" class="hover:text-accent"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-white font-bold mb-2">Contacto</h3>
+        <p>📍 Tristan Lobo- San Isidro<br>📞 3834-603097</p>
+      </div>
+
+    </div>
+
+
+    <!-- BOTÓN ARRIBA -->
+    <button id="btnTop"
+      class="hidden fixed bottom-6 right-6 bg-accent text-black w-12 h-12 rounded-full font-bold">↑</button>
+
+    <div class="text-center mt-8 text-neutral-600">
+      © 2026 BLACK BURGER
+    </div>
+  </footer>
+
+  <script>
+    function filtrarMenu(categoria, boton) {
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.classList.toggle('hidden', !item.classList.contains(categoria))
+      })
+
+      document.querySelectorAll('.menu-btn').forEach(btn => {
+        btn.classList.remove('bg-accent', 'text-black', 'font-bold')
+        btn.classList.add('border', 'border-accent')
+      })
+
+      boton.classList.add('bg-accent', 'text-black', 'font-bold')
+
+
+    }
+
+
+    const btnTop = document.getElementById('btnTop')
+    window.addEventListener('scroll', () => {
+      btnTop.classList.toggle('hidden', window.scrollY < 300)
+    })
+    btnTop.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    const btnMenu = document.getElementById('btnMenu')
+    const menuMobile = document.getElementById('menuMobile')
+
+    btnMenu.addEventListener('click', () => {
+      menuMobile.classList.toggle('hidden')
+    })
+
+  </script>
+
+</body>
+
+</html>

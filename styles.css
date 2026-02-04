@@ -1,0 +1,205 @@
+/* =====================================================
+   BLACK BURGER – RESPONSIVE MOBILE
+   Compatible con Tailwind CDN
+   No elimina productos
+===================================================== */
+
+/* =========================
+   AJUSTES GENERALES MOBILE
+========================= */
+@media (max-width: 640px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  section {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  p {
+    line-height: 1.5;
+  }
+}
+
+/* =========================
+   HEADER
+========================= */
+@media (max-width: 640px) {
+  header span {
+    font-size: 0.9rem;
+  }
+
+  header nav {
+    display: none;
+  }
+}
+
+/* =========================
+   HERO
+========================= */
+@media (max-width: 640px) {
+  .fade-in {
+    padding-top: 5.5rem;
+  }
+
+  .fade-in img {
+    width: 90px;
+    height: 90px;
+  }
+
+  .fade-in a {
+    padding: 0.9rem 2rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* =========================
+   BOTONES DE CATEGORÍAS
+========================= */
+@media (max-width: 640px) {
+  .menu-btn {
+    width: 100%;
+    padding: 0.9rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* =========================
+   ITEMS DEL MENÚ
+========================= */
+@media (max-width: 640px) {
+
+  .menu-item > div {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .menu-item h3 {
+    font-size: 1rem;
+  }
+
+  .menu-item p {
+    font-size: 0.85rem;
+  }
+
+  /* precios burgers */
+  .menu-item .text-accent {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+    font-size: 0.85rem;
+  }
+}
+
+/* =========================
+   LOMITOS
+========================= */
+@media (max-width: 640px) {
+  .menu-item.lomitos .text-accent {
+    font-size: 0.95rem;
+  }
+}
+
+/* =========================
+   PIZZAS
+========================= */
+@media (max-width: 640px) {
+  .menu-item.pizzas .text-accent {
+    display: flex;
+    gap: 1.2rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* =========================
+   QUIÉNES SOMOS
+========================= */
+@media (max-width: 640px) {
+  #quienes-somos h2 {
+    font-size: 1.8rem;
+  }
+
+  #quienes-somos p {
+    font-size: 0.9rem;
+  }
+}
+
+/* =========================
+   CTA WHATSAPP
+========================= */
+@media (max-width: 640px) {
+  section a[href*="wa.me"] {
+    width: 100%;
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* =========================
+   FOOTER
+========================= */
+@media (max-width: 640px) {
+  footer {
+    text-align: center;
+  }
+
+  footer h3 {
+    font-size: 1rem;
+  }
+
+  footer p {
+    font-size: 0.85rem;
+  }
+
+  footer i {
+    font-size: 1.8rem;
+  }
+}
+
+/* =========================
+   BOTÓN SUBIR
+========================= */
+@media (max-width: 640px) {
+  #btnTop {
+    width: 44px;
+    height: 44px;
+    font-size: 1rem;
+  }
+}
+
+
+.prices {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-weight: 700;
+  color: #facc15; /* accent */
+  font-size: 0.9rem;
+}
+
+.prices span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.prices small {
+  color: #9ca3af; /* gray-400 */
+  font-size: 0.7rem;
+  font-weight: 600;
+}
