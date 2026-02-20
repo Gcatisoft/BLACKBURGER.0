@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BLACK BURGER | Catálogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --dark: #111111;
+      --dark-2: #1a1a1a;
+      --dark-3: #222222;
+      --gold: #f5c518;
+      --gold-glow: rgba(245,197,24,0.15);
+      --white: #ffffff;
+      --gray-1: #f0f0f0;
+      --gray-2: #999999;
+      --gray-3: #555555;
+      --green-wa: #25D366;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-condensed: 'Barlow Condensed', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--black); color: var(--white); font-family: var(--font-body); overflow-x: hidden; line-height: 1.6; }
+    ::selection { background: var(--gold); color: var(--black); }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      pointer-events: none; z-index: 9999; opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ====== HEADER ====== */
+    .site-header { position: fixed; top: 0; left: 0; right: 0; z-index: 100; transition: background 0.4s, box-shadow 0.4s; }
+    .site-header.scrolled { background: rgba(10,10,10,0.96); backdrop-filter: blur(20px); box-shadow: 0 1px 0 rgba(245,197,24,0.2); }
+    .header-inner { max-width: 1280px; margin: 0 auto; padding: 1.1rem 2rem; display: flex; align-items: center; gap: 1.5rem; }
+    .logo { font-family: var(--font-display); font-size: 1.55rem; letter-spacing: 0.12em; flex-shrink: 0; display: flex; align-items: center; gap: 0.4rem; }
+    .logo .logo-icon { color: var(--gold); font-size: 1.15rem; }
+    .logo .accent { color: var(--gold); }
+    .nav-desktop { display: flex; align-items: center; gap: 1.8rem; margin-left: auto; }
+    .nav-link { font-family: var(--font-condensed); font-size: 0.82rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-2); transition: color 0.2s; position: relative; display: flex; align-items: center; gap: 0.35rem; }
+    .nav-link i { font-size: 0.75rem; }
+    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--gold); transition: width 0.3s; }
+    .nav-link:hover { color: var(--white); }
+    .nav-link:hover::after { width: 100%; }
+    .btn-order { display: flex; align-items: center; gap: 0.45rem; background: var(--gold); color: var(--black); padding: 0.6rem 1.3rem; border-radius: 2px; font-family: var(--font-condensed); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; transition: background 0.2s, transform 0.2s; flex-shrink: 0; }
+    .btn-order:hover { background: var(--white); transform: translateY(-1px); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; margin-left: auto; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--white); transition: all 0.3s; }
+    .hamburger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-nav { display: none; flex-direction: column; background: rgba(10,10,10,0.99); border-top: 1px solid var(--dark-3); padding: 1.5rem 2rem; gap: 0; }
+    .mobile-nav.open { display: flex; }
+    .mobile-link { font-family: var(--font-condensed); font-size: 1.15rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-2); padding: 0.85rem 0; border-bottom: 1px solid var(--dark-3); transition: color 0.2s; display: flex; align-items: center; gap: 0.6rem; }
+    .mobile-link i { color: var(--gold); font-size: 0.85rem; width: 18px; }
+    .mobile-link:hover { color: var(--gold); }
+    .mobile-cta { display: flex; align-items: center; justify-content: center; gap: 0.5rem; background: var(--gold); color: var(--black); padding: 0.9rem 1.5rem; font-family: var(--font-condensed); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 1.5rem; border-radius: 2px; }
+
+    /* ====== HERO ====== */
+    .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; }
+    .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(245,197,24,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245,197,24,0.04) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%); }
+    .hero-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(245,197,24,0.08) 0%, transparent 70%); border-radius: 50%; }
+    .hero-content { position: relative; z-index: 1; text-align: center; padding: 8rem 2rem 4rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+    .hero-badge { display: flex; align-items: center; gap: 0.6rem; font-family: var(--font-condensed); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); border: 1px solid rgba(245,197,24,0.3); padding: 0.45rem 1.2rem; border-radius: 100px; animation: fadeUp 0.8s ease both; }
+    .hero-badge i { font-size: 0.65rem; }
+    .badge-dot { opacity: 0.4; font-size: 0.4rem; }
+    .hero-logo-wrap { animation: fadeUp 0.8s 0.1s ease both; }
+    .hero-logo { width: 105px; height: 105px; object-fit: contain; margin: 0 auto; filter: drop-shadow(0 0 30px rgba(245,197,24,0.4)); }
+    .hero-title { font-family: var(--font-display); line-height: 0.9; letter-spacing: 0.05em; animation: fadeUp 0.8s 0.2s ease both; }
+    .line-1 { display: block; font-size: clamp(4rem, 12vw, 9rem); }
+    .line-2 { display: block; font-size: clamp(4rem, 12vw, 9rem); color: transparent; -webkit-text-stroke: 2px var(--gold); text-shadow: 0 0 60px rgba(245,197,24,0.25); }
+    .hero-sub { color: var(--gray-2); font-size: 1rem; font-weight: 300; letter-spacing: 0.05em; max-width: 380px; animation: fadeUp 0.8s 0.3s ease both; }
+    .hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.4s ease both; }
+    .cta-primary { display: inline-flex; align-items: center; gap: 0.5rem; background: var(--gold); color: var(--black); padding: 0.9rem 2.2rem; border-radius: 2px; font-family: var(--font-condensed); font-size: 0.9rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; transition: all 0.3s; position: relative; overflow: hidden; }
+    .cta-primary::before { content: ''; position: absolute; inset: 0; background: var(--white); transform: scaleX(0); transform-origin: right; transition: transform 0.3s; }
+    .cta-primary:hover::before { transform: scaleX(1); transform-origin: left; }
+    .cta-primary span, .cta-primary i { position: relative; z-index: 1; }
+    .cta-secondary { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(255,255,255,0.2); color: var(--white); padding: 0.9rem 2.2rem; border-radius: 2px; font-family: var(--font-condensed); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.3s; }
+    .cta-secondary .wa-green { color: var(--green-wa); font-size: 1.1rem; }
+    .cta-secondary:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); }
+    .hero-stats { display: flex; align-items: center; gap: 2rem; margin-top: 1rem; animation: fadeUp 0.8s 0.5s ease both; }
+    .stat { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+    .stat-icon { color: var(--gold); font-size: 1rem; margin-bottom: 0.15rem; }
+    .stat-number { font-family: var(--font-display); font-size: 1.9rem; color: var(--gold); line-height: 1; }
+    .stat-label { font-family: var(--font-condensed); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-2); }
+    .stat-divider { width: 1px; height: 44px; background: var(--dark-3); }
+    .hero-scroll { position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; animation: fadeUp 0.8s 0.7s ease both; }
+    .hero-scroll span { font-family: var(--font-condensed); font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gray-3); }
+    .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, var(--gray-3), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+
+    /* ====== FEATURES STRIP ====== */
+    .features-strip { background: var(--dark-2); border-top: 1px solid var(--dark-3); border-bottom: 1px solid var(--dark-3); padding: 1.4rem 2rem; }
+    .features-inner { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 2.5rem; flex-wrap: wrap; }
+    .feature-item { display: flex; align-items: center; gap: 0.55rem; font-family: var(--font-condensed); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-2); }
+    .feature-item i { color: var(--gold); font-size: 0.95rem; }
+
+    /* ====== MENU ====== */
+    .menu-section { background: var(--dark); padding: 5.5rem 0; position: relative; }
+    .menu-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
+    .menu-container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+    .section-header { text-align: center; margin-bottom: 3.5rem; }
+    .section-label { font-family: var(--font-condensed); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .section-title { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4rem); line-height: 1; letter-spacing: 0.05em; margin-bottom: 0.75rem; }
+    .section-title .accent { color: var(--gold); }
+    .section-desc { color: var(--gray-2); font-size: 0.95rem; font-weight: 300; }
+    .cat-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+    .cat-btn { font-family: var(--font-condensed); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.55rem 1.1rem; border: 1px solid var(--dark-3); background: transparent; color: var(--gray-2); cursor: pointer; border-radius: 2px; transition: all 0.25s; display: flex; align-items: center; gap: 0.4rem; }
+    .cat-btn i { font-size: 0.75rem; }
+    .cat-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .cat-btn.active { background: var(--gold); border-color: var(--gold); color: var(--black); }
+    .size-legend { display: flex; gap: 1.2rem; margin-bottom: 1.5rem; font-family: var(--font-condensed); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--gray-3); text-transform: uppercase; flex-wrap: wrap; }
+    .size-legend span { display: flex; align-items: center; gap: 0.25rem; }
+    .size-legend i { color: var(--gold); font-size: 0.6rem; }
+    .menu-list { display: flex; flex-direction: column; }
+    .menu-item { position: relative; padding: 1.4rem 0; border-bottom: 1px solid rgba(255,255,255,0.055); transition: background 0.2s; }
+    .menu-item:hover { background: rgba(245,197,24,0.025); }
+    .menu-item.hidden { display: none; }
+    .menu-item.featured { background: rgba(245,197,24,0.04); border-left: 2px solid var(--gold); padding-left: 1rem; }
+    .featured-tag { display: inline-flex; align-items: center; gap: 0.3rem; font-family: var(--font-condensed); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.35rem; }
+    .item-content { display: flex; align-items: flex-start; justify-content: space-between; gap: 2rem; }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+    .item-icon { width: 26px; height: 26px; border-radius: 50%; background: rgba(245,197,24,0.1); border: 1px solid rgba(245,197,24,0.2); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: var(--gold); flex-shrink: 0; }
+    .item-name { font-family: var(--font-condensed); font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; }
+    .item-desc { font-size: 0.85rem; color: var(--gray-2); font-weight: 300; line-height: 1.5; padding-left: 2rem; }
+    .item-prices { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; flex-shrink: 0; }
+    .price-badge { display: flex; align-items: center; gap: 0.4rem; }
+    .price-label { font-family: var(--font-condensed); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-3); min-width: 16px; text-align: right; }
+    .price-val { font-family: var(--font-condensed); font-size: 1rem; font-weight: 700; color: var(--gold); white-space: nowrap; }
+    .menu-cta { text-align: center; margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--dark-3); }
+    .menu-cta p { color: var(--gray-2); font-size: 0.9rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .menu-cta p i { color: var(--gold); }
+    .wa-btn { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid rgba(37,211,102,0.4); color: var(--green-wa); padding: 0.75rem 1.8rem; font-family: var(--font-condensed); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 2px; transition: all 0.3s; }
+    .wa-btn:hover { background: rgba(37,211,102,0.1); border-color: var(--green-wa); }
+
+    /* ====== ABOUT ====== */
+    .about-section { background: var(--black); padding: 6rem 0; position: relative; overflow: hidden; }
+    .about-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(245,197,24,0.3), transparent); }
+    .about-section::after { content: ''; position: absolute; right: -200px; top: 50%; transform: translateY(-50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(245,197,24,0.04) 0%, transparent 70%); border-radius: 50%; }
+    .about-container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+    .about-label { display: flex; align-items: center; gap: 1rem; justify-content: center; margin-bottom: 4rem; }
+    .label-line { flex: 1; max-width: 120px; height: 1px; background: var(--dark-3); }
+    .about-label span { font-family: var(--font-condensed); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 0.4rem; }
+    .about-grid { display: grid; grid-template-columns: 1fr 370px; gap: 5rem; align-items: center; }
+    .about-title { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1.05; letter-spacing: 0.03em; margin-bottom: 1.5rem; }
+    .about-title .accent { color: var(--gold); }
+    .about-p { color: var(--gray-2); font-size: 0.95rem; font-weight: 300; line-height: 1.8; margin-bottom: 1rem; }
+    .about-values { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 2rem; }
+    .value { display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-condensed); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-1); }
+    .value-icon { width: 32px; height: 32px; border-radius: 50%; background: rgba(245,197,24,0.1); border: 1px solid rgba(245,197,24,0.25); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 0.8rem; flex-shrink: 0; }
+    .about-visual { display: flex; justify-content: center; }
+    .visual-card { position: relative; width: 100%; max-width: 320px; aspect-ratio: 3/4; border: 1px solid var(--dark-3); background: var(--dark); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .visual-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 40%, rgba(245,197,24,0.04) 50%, transparent 60%); }
+    .card-content { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; z-index: 1; padding: 2rem; text-align: center; }
+    .card-logo { width: 110px; height: 110px; object-fit: contain; margin: 0 auto; filter: drop-shadow(0 0 40px rgba(245,197,24,0.4)); }
+    .card-icons { display: flex; gap: 1.5rem; }
+    .card-icon-item { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .card-icon-item i { color: var(--gold); font-size: 1.2rem; }
+    .card-icon-item span { font-family: var(--font-condensed); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-2); }
+    .card-est { display: block; font-family: var(--font-condensed); font-size: 0.7rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.3rem; }
+    .card-tagline { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.05em; }
+    .card-deco { position: absolute; bottom: -1px; left: -1px; right: -1px; height: 4px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
+
+    /* ====== CTA ====== */
+    .cta-section { background: var(--dark); position: relative; padding: 6rem 2rem; overflow: hidden; text-align: center; }
+    .cta-section::before, .cta-section::after { content: ''; position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); }
+    .cta-section::before { top: 0; } .cta-section::after { bottom: 0; }
+    .cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 700px; height: 400px; background: radial-gradient(ellipse, rgba(245,197,24,0.06) 0%, transparent 70%); }
+    .cta-inner { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1.25rem; }
+    .cta-eyebrow { font-family: var(--font-condensed); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: 0.5rem; }
+    .cta-title { font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1; letter-spacing: 0.04em; }
+    .cta-title .accent { color: var(--gold); }
+    .cta-sub { color: var(--gray-2); font-size: 0.95rem; font-weight: 300; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .cta-sub i { color: var(--gold); }
+    .cta-wa-btn { display: inline-flex; align-items: center; gap: 1rem; background: #151515; border: 1px solid rgba(37,211,102,0.3); padding: 1.1rem 2rem; border-radius: 4px; transition: all 0.3s; text-align: left; }
+    .cta-wa-btn:hover { border-color: var(--green-wa); background: rgba(37,211,102,0.08); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(37,211,102,0.1); }
+    .wa-icon { width: 44px; height: 44px; background: var(--green-wa); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: white; flex-shrink: 0; }
+    .wa-text { display: flex; flex-direction: column; gap: 0.1rem; }
+    .wa-small { font-family: var(--font-condensed); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-2); display: flex; align-items: center; gap: 0.3rem; }
+    .wa-big { font-family: var(--font-condensed); font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; }
+    .wa-arrow { color: var(--gray-3); font-size: 0.9rem; margin-left: 0.5rem; transition: transform 0.3s, color 0.3s; }
+    .cta-wa-btn:hover .wa-arrow { transform: translateX(4px); color: var(--green-wa); }
+    .cta-contact-row { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; justify-content: center; }
+    .cta-contact-item { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-condensed); font-size: 0.82rem; letter-spacing: 0.08em; color: var(--gray-3); }
+    .cta-contact-item i { color: var(--gold); }
+
+    /* ====== FOOTER ====== */
+    .site-footer { background: #000; position: relative; border-top: 1px solid var(--dark-3); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; padding: 4rem 2rem; display: grid; grid-template-columns: 1.5fr 1fr 1.5fr; gap: 3rem; }
+    .footer-logo { font-family: var(--font-display); font-size: 1.75rem; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.75rem; }
+    .footer-logo .logo-icon { color: var(--gold); font-size: 1.3rem; }
+    .footer-logo .accent { color: var(--gold); }
+    .footer-brand p { color: var(--gray-2); font-size: 0.85rem; font-weight: 300; line-height: 1.7; }
+    .footer-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.2rem; }
+    .footer-badge-item { display: flex; align-items: center; gap: 0.3rem; font-family: var(--font-condensed); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-3); border: 1px solid var(--dark-3); padding: 0.3rem 0.6rem; border-radius: 2px; }
+    .footer-badge-item i { color: var(--gold); font-size: 0.6rem; }
+    .footer-links, .footer-contact { display: flex; flex-direction: column; gap: 0.4rem; }
+    .footer-links h4, .footer-contact h4 { font-family: var(--font-condensed); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
+    .footer-links a { color: var(--gray-2); font-size: 0.9rem; font-weight: 300; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0; }
+    .footer-links a i { color: var(--gold); font-size: 0.75rem; width: 14px; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-contact p { color: var(--gray-2); font-size: 0.85rem; font-weight: 300; display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.5; padding: 0.25rem 0; }
+    .footer-contact p i { color: var(--gold); margin-top: 2px; flex-shrink: 0; width: 14px; }
+    .footer-hours { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-condensed); font-size: 0.75rem; letter-spacing: 0.08em; color: var(--gray-3); margin-top: 0.3rem; padding: 0.25rem 0; }
+    .footer-hours i { color: var(--gold); font-size: 0.7rem; }
+    .social-links { display: flex; gap: 0.75rem; margin-top: 1rem; }
+    .social-links a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--dark-3); color: var(--gray-2); font-size: 0.95rem; transition: all 0.25s; border-radius: 2px; }
+    .social-links a:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-glow); }
+    .footer-bottom { border-top: 1px solid var(--dark-3); padding: 1.5rem 2rem; }
+    .footer-bottom-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .footer-bottom p { font-family: var(--font-condensed); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-3); display: flex; align-items: center; gap: 0.4rem; }
+    .footer-bottom p i { color: var(--gold); }
+    .footer-bottom-links { display: flex; gap: 1.5rem; }
+    .footer-bottom-links a { font-family: var(--font-condensed); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-3); transition: color 0.2s; display: flex; align-items: center; gap: 0.3rem; }
+    .footer-bottom-links a:hover { color: var(--gold); }
+    .scroll-top { position: fixed; bottom: 2rem; right: 2rem; width: 44px; height: 44px; background: var(--gold); color: var(--black); border: none; border-radius: 2px; font-size: 0.9rem; cursor: pointer; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; z-index: 99; display: flex; align-items: center; justify-content: center; }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+    .scroll-top:hover { background: var(--white); }
+
+    /* ====== ANIMATIONS ====== */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+    /* ====== RESPONSIVE — TABLET (max 1024px) ====== */
+    @media (max-width: 1024px) {
+      .footer-inner { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .footer-brand { grid-column: 1 / -1; }
+      .about-grid { gap: 3rem; }
+      .hero-glow { width: 400px; height: 400px; }
+      .features-inner { gap: 1.5rem; }
+    }
+
+    /* ====== RESPONSIVE — MOBILE (max 768px) ====== */
+    @media (max-width: 768px) {
+      /* Header */
+      .nav-desktop, .btn-order { display: none; }
+      .hamburger { display: flex; }
+      .header-inner { padding: 1rem 1.2rem; }
+
+      /* Hero */
+      .hero-content { padding: 7rem 1.5rem 3rem; gap: 1.2rem; }
+      .hero-logo { width: 80px; height: 80px; }
+      .hero-badge { font-size: 0.62rem; padding: 0.35rem 0.9rem; gap: 0.4rem; }
+      .hero-sub { font-size: 0.9rem; }
+      .hero-actions { flex-direction: column; width: 100%; }
+      .cta-primary, .cta-secondary { width: 100%; justify-content: center; padding: 0.85rem 1.5rem; }
+      .hero-stats { gap: 1.2rem; }
+      .stat-number { font-size: 1.6rem; }
+      .stat-icon { font-size: 0.85rem; }
+
+      /* Features strip */
+      .features-strip { padding: 1rem 1.2rem; overflow-x: auto; }
+      .features-inner { justify-content: flex-start; flex-wrap: nowrap; gap: 1.5rem; min-width: max-content; }
+
+      /* Menu */
+      .menu-section { padding: 4rem 0; }
+      .menu-container { padding: 0 1.2rem; }
+      .cat-tabs { gap: 0.4rem; }
+      .cat-btn { font-size: 0.72rem; padding: 0.45rem 0.8rem; }
+      .cat-btn i { display: none; }
+      .size-legend { font-size: 0.62rem; gap: 0.8rem; }
+
+      /* Menu items */
+      .item-content { flex-direction: column; gap: 0.6rem; }
+      .item-prices { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+      .item-desc { padding-left: 0; font-size: 0.82rem; }
+      .item-name { font-size: 0.95rem; }
+
+      /* About */
+      .about-section { padding: 4rem 0; }
+      .about-container { padding: 0 1.2rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .about-visual { order: -1; }
+      .visual-card { aspect-ratio: 4/3; max-width: 100%; }
+      .card-content { flex-direction: row; padding: 1.5rem; gap: 1rem; }
+      .card-logo { width: 70px; height: 70px; }
+      .card-icons { display: none; }
+      .card-tagline { font-size: 1.1rem; }
+      .about-label { margin-bottom: 2.5rem; }
+      .about-title { font-size: clamp(1.8rem, 6vw, 2.5rem); }
+
+      /* CTA */
+      .cta-section { padding: 4rem 1.2rem; }
+      .cta-wa-btn { width: 100%; max-width: 380px; justify-content: space-between; }
+      .cta-contact-row { flex-direction: column; gap: 0.6rem; align-items: center; }
+
+      /* Footer */
+      .footer-inner { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.2rem; }
+      .footer-brand { grid-column: auto; }
+      .footer-bottom { padding: 1.2rem 1.2rem; }
+      .footer-bottom-inner { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .footer-bottom-links { gap: 1rem; }
+
+      /* Scroll top */
+      .scroll-top { bottom: 1.2rem; right: 1.2rem; width: 40px; height: 40px; }
+    }
+
+    /* ====== RESPONSIVE — SMALL MOBILE (max 480px) ====== */
+    @media (max-width: 480px) {
+      /* Header */
+      .logo { font-size: 1.25rem; }
+      .logo .logo-icon { font-size: 1rem; }
+
+      /* Hero */
+      .hero-content { padding: 6rem 1rem 2.5rem; }
+      .hero-badge { font-size: 0.58rem; letter-spacing: 0.15em; }
+      .hero-logo { width: 70px; height: 70px; }
+      .line-1, .line-2 { font-size: clamp(3.2rem, 14vw, 5rem); }
+      .hero-sub { font-size: 0.85rem; max-width: 100%; }
+      .cta-primary, .cta-secondary { font-size: 0.82rem; padding: 0.8rem 1.2rem; }
+      .hero-stats { gap: 0.8rem; }
+      .stat-number { font-size: 1.35rem; }
+      .stat-label { font-size: 0.6rem; letter-spacing: 0.1em; }
+      .stat-divider { height: 32px; }
+
+      /* Features */
+      .feature-item { font-size: 0.7rem; }
+
+      /* Menu */
+      .section-title { font-size: 2.2rem; }
+      .cat-tabs { gap: 0.35rem; }
+      .cat-btn { font-size: 0.68rem; padding: 0.4rem 0.7rem; letter-spacing: 0.05em; }
+      .item-name { font-size: 0.88rem; }
+      .price-val { font-size: 0.9rem; }
+      .menu-item { padding: 1.1rem 0; }
+      .item-icon { width: 22px; height: 22px; font-size: 0.58rem; }
+
+      /* About */
+      .value { font-size: 0.78rem; }
+      .value-icon { width: 28px; height: 28px; font-size: 0.72rem; }
+
+      /* CTA */
+      .cta-title { font-size: clamp(2rem, 10vw, 3rem); }
+      .cta-sub { font-size: 0.85rem; }
+      .cta-wa-btn { padding: 0.9rem 1.2rem; gap: 0.75rem; }
+      .wa-big { font-size: 0.95rem; }
+      .wa-icon { width: 38px; height: 38px; font-size: 1.2rem; }
+      .cta-contact-item { font-size: 0.75rem; }
+
+      /* Footer */
+      .footer-logo { font-size: 1.4rem; }
+      .footer-inner { padding: 2.5rem 1rem; }
+      .footer-bottom { padding: 1rem; }
+      .footer-bottom p { font-size: 0.65rem; }
+    }
+
+    /* ====== RESPONSIVE — TINY (max 360px) ====== */
+    @media (max-width: 360px) {
+      .hero-content { padding: 5.5rem 0.8rem 2rem; }
+      .hero-badge { display: none; }
+      .line-1, .line-2 { font-size: 3rem; }
+      .hero-stats { gap: 0.5rem; }
+      .stat-divider { display: none; }
+      .cat-btn { font-size: 0.62rem; padding: 0.35rem 0.55rem; }
+      .menu-container { padding: 0 0.8rem; }
+      .about-container { padding: 0 0.8rem; }
+      .cta-section { padding: 3rem 0.8rem; }
+      .footer-inner { padding: 2rem 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header" id="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <i class="fa-solid fa-burger logo-icon"></i>
+      BLACK <span class="accent">BURGER</span>
+    </a>
+    <nav class="nav-desktop">
+      <a href="#" class="nav-link"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="#menu" class="nav-link"><i class="fa-solid fa-book-open"></i> Menú</a>
+      <a href="#nosotros" class="nav-link"><i class="fa-solid fa-store"></i> Nosotros</a>
+      <a href="#contacto" class="nav-link"><i class="fa-solid fa-location-dot"></i> Contacto</a>
+    </nav>
+    <a href="https://wa.me/5493834603097?text=Hola%20quiero%20hacer%20un%20pedido%20en%20Black%20Burger" target="_blank" class="btn-order">
+      <i class="fa-brands fa-whatsapp"></i> Pedir ahora
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#" class="mobile-link"><i class="fa-solid fa-house"></i> Inicio</a>
+    <a href="#menu" class="mobile-link"><i class="fa-solid fa-book-open"></i> Menú</a>
+    <a href="#nosotros" class="mobile-link"><i class="fa-solid fa-store"></i> Nosotros</a>
+    <a href="#contacto" class="mobile-link"><i class="fa-solid fa-location-dot"></i> Contacto</a>
+    <a href="https://wa.me/5493834603097" target="_blank" class="mobile-cta"><i class="fa-brands fa-whatsapp"></i> Pedir por WhatsApp</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="inicio">
+  <div class="hero-bg"><div class="hero-grid"></div><div class="hero-glow"></div></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <i class="fa-solid fa-certificate"></i>
+      <span>Est. 2024</span><span class="badge-dot">●</span>
+      <span>Artesanal</span><span class="badge-dot">●</span><span>Premium</span>
+    </div>
+    <div class="hero-logo-wrap">
+      <img src="img/logo.png" alt="Black Burger Logo" class="hero-logo" />
+    </div>
+    <h1 class="hero-title">
+      <span class="line-1">BLACK</span>
+      <span class="line-2">BURGER</span>
+    </h1>
+    <p class="hero-sub">Hamburguesas artesanales. Sabor intenso. Experiencia premium.</p>
+    <div class="hero-actions">
+      <a href="#menu" class="cta-primary"><span>Ver Menú</span><i class="fa-solid fa-arrow-down"></i></a>
+      <a href="https://wa.me/5493834603097?text=Hola%20quiero%20hacer%20un%20pedido%20en%20Black%20Burger" target="_blank" class="cta-secondary">
+        <i class="fa-brands fa-whatsapp wa-green"></i><span>Hacer un pedido</span>
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><i class="fa-solid fa-burger stat-icon"></i><span class="stat-number">8+</span><span class="stat-label">Burgers</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><i class="fa-solid fa-utensils stat-icon"></i><span class="stat-number">30+</span><span class="stat-label">Productos</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><i class="fa-solid fa-hand-sparkles stat-icon"></i><span class="stat-number">100%</span><span class="stat-label">Artesanal</span></div>
+    </div>
+  </div>
+  <div class="hero-scroll"><span>Scrollear</span><div class="scroll-line"></div></div>
+</section>
+
+<!-- FEATURES STRIP -->
+<div class="features-strip">
+  <div class="features-inner">
+    <div class="feature-item"><i class="fa-solid fa-wheat-awn"></i> Pan artesanal</div>
+    <div class="feature-item"><i class="fa-solid fa-fire-flame-curved"></i> Carne premium</div>
+    <div class="feature-item"><i class="fa-brands fa-whatsapp"></i> Pedido por WhatsApp</div>
+    <div class="feature-item"><i class="fa-solid fa-clock"></i> Rápido y fresco</div>
+    <div class="feature-item"><i class="fa-solid fa-star"></i> Sabor garantizado</div>
+  </div>
+</div>
+
+<!-- MENU -->
+<section class="menu-section" id="menu">
+  <div class="menu-container">
+    <div class="section-header">
+      <div class="section-label"><i class="fa-solid fa-book-open"></i> Lo que ofrecemos</div>
+      <h2 class="section-title">Nuestro <span class="accent">Menú</span></h2>
+      <p class="section-desc">Ingredientes premium, recetas propias, sabor que no olvidás.</p>
+    </div>
+
+    <div class="cat-tabs">
+      <button class="cat-btn active" data-cat="burgers"><i class="fa-solid fa-burger"></i> Burgers</button>
+      <button class="cat-btn" data-cat="lomitos"><i class="fa-solid fa-bread-slice"></i> Lomitos</button>
+      <button class="cat-btn" data-cat="pizzas"><i class="fa-solid fa-pizza-slice"></i> Pizzas</button>
+      <button class="cat-btn" data-cat="milanesas"><i class="fa-solid fa-drumstick-bite"></i> Milanesas</button>
+      <button class="cat-btn" data-cat="plato"><i class="fa-solid fa-plate-wheat"></i> Al Plato</button>
+      <button class="cat-btn" data-cat="zappings"><i class="fa-solid fa-star"></i> Zappings</button>
+      <button class="cat-btn" data-cat="bebidas"><i class="fa-solid fa-bottle-water"></i> Bebidas</button>
+      <button class="cat-btn" data-cat="extras"><i class="fa-solid fa-circle-plus"></i> Extras</button>
+    </div>
+
+    <div class="size-legend" id="sizeLegend">
+      <span><i class="fa-solid fa-circle-info"></i> S = Simple</span>
+      <span><i class="fa-solid fa-circle-info"></i> D = Doble carne</span>
+      <span><i class="fa-solid fa-circle-info"></i> T = Triple carne</span>
+    </div>
+
+    <div class="menu-list">
+
+      <!-- ===== BURGERS ===== -->
+      <div class="menu-item burgers" data-cat="burgers">
+        <div class="item-content">
+          <div class="item-info">
+            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER CLÁSICA</h3></div>
+            <p class="item-desc">Pan 120g, carne 120g, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.</p>
+          </div>
+          <div class="item-prices">
+            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$8.000</span></div>
+            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$9.000</span></div>
+            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$10.000</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item burgers" data-cat="burgers">
+        <div class="item-content">
+          <div class="item-info">
+            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER PROVO</h3></div>
+            <p class="item-desc">Pan 120g, carne 120g, huevo, provoleta, salteado de morrón, tomate y papas fritas.</p>
+          </div>
+          <div class="item-prices">
+            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$8.000</span></div>
+            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$9.000</span></div>
+            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$10.000</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item burgers" data-cat="burgers">
+        <div class="item-content">
+          <div class="item-info">
+            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER DE LA CASA</h3></div>
+            <p class="item-desc">Pan 120g, carne 120g, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.</p>
+          </div>
+          <div class="item-prices">
+            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$8.000</span></div>
+            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$9.000</span></div>
+            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$10.000</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item burgers featured" data-cat="burgers">
+        <div class="featured-tag"><i class="fa-solid fa-star"></i> Destacado de la casa</div>
+        <div class="item-content">
+          <div class="item-info">
+            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER BLACK</h3></div>
+            <p class="item-desc">Pan 120g, carne 120g, queso tybo, panceta, salsa Big Master y papas fritas.</p>
+          </div>
+          <div class="item-prices">
+            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$8.000</span></div>
+            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$9.000</span></div>
+            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$10.000</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-item burgers" data-cat="burgers">
+        <div class="item-content">
+          <div class="item-info">
+            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER MI GUSTO CULPOSO</h3></div>
+            <p class="item-desc">Pan 120g, carne 120g, panceta, cheddar, huevo, queso tybo, jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.</p>
+          </div>
+          <div class="item-prices">
+            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$8.000</span></div>
+            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$9.000</span></div>
+            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$10.000</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== LOMITOS ===== -->
+      <div class="menu-item lomitos hidden" data-cat="lomitos"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO CLÁSICO</h3></div><p class="item-desc">Pan, carne 200g, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
+      <div class="menu-item lomitos hidden" data-cat="lomitos"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO PROVO</h3></div><p class="item-desc">Pan, carne 200g, huevo, provoleta, salteado de morrón, tomate y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
+      <div class="menu-item lomitos hidden" data-cat="lomitos"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO DE LA CASA</h3></div><p class="item-desc">Pan, carne 200g, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
+      <div class="menu-item lomitos featured hidden" data-cat="lomitos"><div class="featured-tag"><i class="fa-solid fa-star"></i> Destacado</div><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO BLACK</h3></div><p class="item-desc">Pan, carne 200g, queso tybo, panceta, salsa Big Master y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
+      <div class="menu-item lomitos hidden" data-cat="lomitos"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO MI GUSTO CULPOSO</h3></div><p class="item-desc">Pan, carne 200g, panceta, cheddar, huevo, queso tybo, jamón, cebolla, crispy, ketchup, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
+
+      <!-- ===== PIZZAS ===== -->
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">MUZARELLA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$12.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$7.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">DOBLE MUZZA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$18.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$10.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">ESPECIAL</h3></div><p class="item-desc">Jamón, muzzarella y aceitunas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$15.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$8.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">FUGAZZETA</h3></div><p class="item-desc">Cebolla, muzzarella y orégano.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$13.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$7.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">NAPOLITANA</h3></div><p class="item-desc">Tomate fresco, ajo y muzzarella.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$15.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$8.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">CALABREZA</h3></div><p class="item-desc">Longaniza, muzzarella y aceitunas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$15.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$8.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">ARGENTINA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$17.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$9.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">PALMITO</h3></div><p class="item-desc">Palmitos, muzzarella y salsa de tomate.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$16.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$9.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">CHOCLO</h3></div><p class="item-desc">Choclo, muzzarella y salsa de tomate.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$15.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$8.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">TERNERA</h3></div><p class="item-desc">Ternera, muzzarella y salsa especial.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$17.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$9.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">CHAMPIÑÓN</h3></div><p class="item-desc">Champiñones, muzzarella y salsa de tomate.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$17.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$9.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">CUATRO QUESOS</h3></div><p class="item-desc">Mezcla de quesos seleccionados.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$18.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$10.000</span></div></div></div></div>
+      <div class="menu-item pizzas featured hidden" data-cat="pizzas"><div class="featured-tag"><i class="fa-solid fa-star"></i> Destacado</div><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">AMERICANA</h3></div><p class="item-desc">Panceta, cheddar y muzzarella.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$20.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$11.000</span></div></div></div></div>
+      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">LOMO PIZZA</h3></div><p class="item-desc">Lomo, muzzarella y salsa especial.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$25.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$15.000</span></div></div></div></div>
+
+      <!-- ===== MILANESAS ===== -->
+      <div class="menu-item milanesas hidden" data-cat="milanesas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA CLÁSICA</h3></div><p class="item-desc">Pan, carne, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
+      <div class="menu-item milanesas hidden" data-cat="milanesas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA PROVO</h3></div><p class="item-desc">Pan, carne, huevo, provoleta, salteado de morrón, tomate y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
+      <div class="menu-item milanesas hidden" data-cat="milanesas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA DE LA CASA</h3></div><p class="item-desc">Pan, carne, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
+      <div class="menu-item milanesas featured hidden" data-cat="milanesas"><div class="featured-tag"><i class="fa-solid fa-star"></i> Destacado</div><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA BLACK</h3></div><p class="item-desc">Pan, carne 200g, queso tybo, panceta, salsa Big Master y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
+      <div class="menu-item milanesas hidden" data-cat="milanesas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA MI GUSTO CULPOSO</h3></div><p class="item-desc">Pan, carne, panceta, cheddar, huevo, queso tybo, jamón, cebolla, crispy, ketchup, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
+
+      <!-- ===== AL PLATO ===== -->
+      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">NAPOLITANA</h3></div><p class="item-desc">Con jamón, muzzarella y salsa de tomate.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$10.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$18.000</span></div></div></div></div>
+      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">AL CABALLO</h3></div><p class="item-desc">Con huevo frito.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$10.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$18.000</span></div></div></div></div>
+      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">CON PAPAS</h3></div><p class="item-desc">Acompañada con papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$10.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$18.000</span></div></div></div></div>
+      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">CON ENSALADA</h3></div><p class="item-desc">Ensalada fresca de la casa.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$10.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$18.000</span></div></div></div></div>
+      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">FUGAZZETA</h3></div><p class="item-desc">Cebolla y muzzarella.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$10.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$18.000</span></div></div></div></div>
+      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">SUIZA</h3></div><p class="item-desc">Jamón y queso fondue.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$10.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$18.000</span></div></div></div></div>
+
+      <!-- ===== ZAPPINGS ===== -->
+      <div class="menu-item zappings hidden" data-cat="zappings"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-star"></i></div><h3 class="item-name">ZAPPING CLÁSICA</h3></div><p class="item-desc">Pan, carne, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$12.000</span></div></div></div></div>
+      <div class="menu-item zappings hidden" data-cat="zappings"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-star"></i></div><h3 class="item-name">ZAPPING GUSTO CULPOSO</h3></div><p class="item-desc">Pan, carne, panceta, cheddar, huevo, queso tybo, jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$14.000</span></div></div></div></div>
+      <div class="menu-item zappings hidden" data-cat="zappings"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-star"></i></div><h3 class="item-name">HAMBURGPIZZA</h3></div><p class="item-desc">La combinación perfecta entre burger y pizza.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$17.000</span></div></div></div></div>
+
+      <!-- ===== BEBIDAS ===== -->
+      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bottle-water"></i></div><h3 class="item-name">COCA-COLA 1,5L</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$5.000</span></div></div></div></div>
+      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bottle-water"></i></div><h3 class="item-name">FANTA 1,5L</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$5.000</span></div></div></div></div>
+      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bottle-water"></i></div><h3 class="item-name">SPRITE 1,5L</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$5.000</span></div></div></div></div>
+      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-beer-mug-empty"></i></div><h3 class="item-name">CERVEZA BRAHMA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$5.500</span></div></div></div></div>
+      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-beer-mug-empty"></i></div><h3 class="item-name">CERVEZA CORONA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$7.000</span></div></div></div></div>
+
+      <!-- ===== EXTRAS ===== -->
+      <div class="menu-item extras hidden" data-cat="extras"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bowl-food"></i></div><h3 class="item-name">PORCIÓN DE PAPAS COMÚN</h3></div><p class="item-desc">Pote de mayonesa casera incluido.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$5.000</span></div></div></div></div>
+      <div class="menu-item extras hidden" data-cat="extras"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bowl-food"></i></div><h3 class="item-name">PORCIÓN DE PAPAS ESPECIAL</h3></div><p class="item-desc">Con cheddar y panceta crocante.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$6.500</span></div></div></div></div>
+
+    </div><!-- /menu-list -->
+
+    <div class="menu-cta">
+      <p><i class="fa-solid fa-circle-info"></i> ¿No encontrás lo que buscás? Consultanos directamente</p>
+      <a href="https://wa.me/5493834603097" target="_blank" class="wa-btn">
+        <i class="fa-brands fa-whatsapp"></i> Escribinos por WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section" id="nosotros">
+  <div class="about-container">
+    <div class="about-label">
+      <div class="label-line"></div>
+      <span><i class="fa-solid fa-store"></i> Quiénes somos</span>
+      <div class="label-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <h2 class="about-title">Una buena burger<br/>es una <span class="accent">experiencia.</span></h2>
+        <p class="about-p">En Black Burger creemos que una buena hamburguesa es mucho más que un alimento. Trabajamos con ingredientes de primera calidad y recetas propias para ofrecerte sabor real, intenso y sin vueltas.</p>
+        <p class="about-p">Cada producto que sale de nuestra cocina lleva el sello de quienes se apasionan por hacer las cosas bien. Desde el pan hasta la salsa, todo está pensado para que cada mordida sea memorable.</p>
+        <div class="about-values">
+          <div class="value"><div class="value-icon"><i class="fa-solid fa-fire-flame-curved"></i></div><span>Calidad Premium</span></div>
+          <div class="value"><div class="value-icon"><i class="fa-solid fa-leaf"></i></div><span>Ingredientes Frescos</span></div>
+          <div class="value"><div class="value-icon"><i class="fa-solid fa-heart"></i></div><span>Hecho con Pasión</span></div>
+          <div class="value"><div class="value-icon"><i class="fa-solid fa-award"></i></div><span>Recetas Propias</span></div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="visual-card">
+          <div class="card-content">
+            <img src="img/logo.png" alt="Black Burger" class="card-logo" />
+            <div class="card-icons">
+              <div class="card-icon-item"><i class="fa-solid fa-burger"></i><span>Burgers</span></div>
+              <div class="card-icon-item"><i class="fa-solid fa-pizza-slice"></i><span>Pizzas</span></div>
+              <div class="card-icon-item"><i class="fa-solid fa-drumstick-bite"></i><span>Milas</span></div>
+            </div>
+            <div>
+              <span class="card-est"><i class="fa-solid fa-certificate"></i> Est. 2024</span>
+              <p class="card-tagline">Sabor que no olvidás</p>
+            </div>
+          </div>
+          <div class="card-deco"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-glow"></div>
+  <div class="cta-inner">
+    <span class="cta-eyebrow"><i class="fa-solid fa-bolt"></i> ¿Listo para pedir?</span>
+    <h2 class="cta-title">Tu próxima<br/><span class="accent">burger te espera.</span></h2>
+    <p class="cta-sub"><i class="fa-solid fa-check-circle"></i> Pedí directo por WhatsApp, rápido y sin complicaciones.</p>
+    <a href="https://wa.me/5493834603097?text=Hola%20quiero%20hacer%20un%20pedido%20en%20Black%20Burger" target="_blank" class="cta-wa-btn">
+      <div class="wa-icon"><i class="fa-brands fa-whatsapp"></i></div>
+      <div class="wa-text">
+        <span class="wa-small"><i class="fa-solid fa-mobile-screen"></i> Abrí WhatsApp</span>
+        <span class="wa-big">Hacer mi Pedido</span>
+      </div>
+      <i class="fa-solid fa-arrow-right wa-arrow"></i>
+    </a>
+    <div class="cta-contact-row">
+      <div class="cta-contact-item"><i class="fa-solid fa-phone"></i> 3834-603097</div>
+      <div class="cta-contact-item"><i class="fa-solid fa-location-dot"></i> Tristán Lobo, San Isidro</div>
+      <div class="cta-contact-item"><i class="fa-solid fa-clock"></i> Todos los días</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer" id="contacto">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo"><i class="fa-solid fa-burger logo-icon"></i> BLACK <span class="accent">BURGER</span></div>
+      <p>Hamburguesas artesanales.<br/>Calidad premium. Sabor real.</p>
+      <div class="footer-badges">
+        <div class="footer-badge-item"><i class="fa-solid fa-fire-flame-curved"></i> Premium</div>
+        <div class="footer-badge-item"><i class="fa-solid fa-leaf"></i> Fresco</div>
+        <div class="footer-badge-item"><i class="fa-solid fa-hand-sparkles"></i> Artesanal</div>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4><i class="fa-solid fa-sitemap"></i> Navegación</h4>
+      <a href="#"><i class="fa-solid fa-house"></i> Inicio</a>
+      <a href="#menu"><i class="fa-solid fa-book-open"></i> Menú</a>
+      <a href="#nosotros"><i class="fa-solid fa-store"></i> Nosotros</a>
+      <a href="#contacto"><i class="fa-solid fa-location-dot"></i> Contacto</a>
+    </div>
+    <div class="footer-contact">
+      <h4><i class="fa-solid fa-address-book"></i> Contacto</h4>
+      <p><i class="fa-solid fa-location-dot"></i> Tristán Lobo — San Isidro, Catamarca</p>
+      <p><i class="fa-solid fa-phone"></i> 3834-603097</p>
+      <p><i class="fa-brands fa-whatsapp"></i> WhatsApp disponible</p>
+      <div class="footer-hours"><i class="fa-solid fa-clock"></i> Abrimos todos los días</div>
+      <div class="social-links">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+        <a href="https://wa.me/5493834603097" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="#" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <p><i class="fa-regular fa-copyright"></i> 2026 BLACK BURGER — Todos los derechos reservados.</p>
+      <div class="footer-bottom-links">
+        <a href="#"><i class="fa-solid fa-shield"></i> Privacidad</a>
+        <a href="#"><i class="fa-solid fa-file-lines"></i> Términos</a>
+      </div>
+    </div>
+  </div>
+  <button class="scroll-top" id="scrollTop" aria-label="Volver arriba">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+</footer>
+
+<script>
+  const header = document.getElementById('header');
+  window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 50); });
+
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); mobileNav.classList.toggle('open'); });
+  mobileNav.querySelectorAll('a').forEach(a => { a.addEventListener('click', () => { hamburger.classList.remove('active'); mobileNav.classList.remove('open'); }); });
+
+  const sizeLegend = document.getElementById('sizeLegend');
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.cat;
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.menu-item').forEach(item => { item.classList.toggle('hidden', item.dataset.cat !== cat); });
+      if (sizeLegend) sizeLegend.style.display = cat === 'burgers' ? 'flex' : 'none';
+    });
+  });
+
+  const scrollTop = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => { scrollTop.classList.toggle('visible', window.scrollY > 400); });
+  scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+</script>
+
+</body>
+</html>
