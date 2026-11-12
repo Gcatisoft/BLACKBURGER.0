@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script>document.documentElement.classList.add('js');</script>
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -43,6 +45,7 @@
       background-size: 180px;
     }
 
+    [hidden] { display: none !important; }
     img { max-width: 100%; display: block; }
     a { color: inherit; text-decoration: none; }
 
@@ -235,7 +238,113 @@
     .scroll-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
     .scroll-top:hover { background: var(--white); }
 
+    /* ====== SCROLL PROGRESS ====== */
+    .scroll-progress { position: fixed; top: 0; left: 0; width: 100%; height: 2px; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--gold), #fff1a8); box-shadow: 0 0 12px rgba(245,197,24,0.6); z-index: 150; pointer-events: none; }
+
+    /* ====== SCROLL REVEAL ====== */
+    .js .reveal { opacity: 0; transform: translateY(40px); filter: blur(6px); transition: opacity 0.9s cubic-bezier(.2,.65,.25,1), transform 0.9s cubic-bezier(.2,.65,.25,1), filter 0.9s ease; transition-delay: var(--d, 0s); }
+    .js .reveal.reveal-left { transform: translateX(-60px); }
+    .js .reveal.reveal-right { transform: translateX(60px); }
+    .js .reveal.reveal-scale { transform: scale(0.9); }
+    .js .reveal.in { opacity: 1; transform: none; filter: none; }
+    .hero-content, .hero-glow { will-change: transform, opacity; }
+    .visual-card { transition: transform 0.3s ease-out; transform-style: preserve-3d; }
+
+    /* ====== MARQUEE ====== */
+    .marquee { background: var(--black); padding: 3.5rem 0; overflow: hidden; display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid var(--dark-3); }
+    .marquee-track { display: flex; align-items: center; gap: 2.5rem; white-space: nowrap; font-family: var(--font-display); font-size: clamp(3rem, 9vw, 7.5rem); line-height: 1; letter-spacing: 0.03em; will-change: transform; }
+    .marquee-track.reverse { margin-left: -40%; }
+    .marquee-track span { color: var(--white); }
+    .marquee-track span.outline { color: transparent; -webkit-text-stroke: 1px rgba(245,197,24,0.6); }
+    .marquee-track i { color: var(--gold); font-size: 0.35em; }
+
+    /* ====== MENU: BOTONES DE AGREGAR ====== */
+    .add-hint { display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-family: var(--font-condensed); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray-2); margin-bottom: 1.2rem; }
+    .add-hint i { color: var(--gold); animation: tap 1.8s ease-in-out infinite; }
+    button.price-badge { background: rgba(245,197,24,0.05); border: 1px solid rgba(245,197,24,0.2); border-radius: 2px; padding: 0.35rem 0.6rem; cursor: pointer; color: inherit; font: inherit; transition: background 0.2s, border-color 0.2s, transform 0.2s; }
+    button.price-badge:hover, button.price-badge:focus-visible { background: var(--gold); border-color: var(--gold); outline: none; transform: translateY(-1px); }
+    button.price-badge:hover .price-val, button.price-badge:hover .price-label, button.price-badge:hover .price-add,
+    button.price-badge:focus-visible .price-val, button.price-badge:focus-visible .price-label, button.price-badge:focus-visible .price-add { color: var(--black); }
+    .price-add { font-size: 0.6rem; color: var(--gold); margin-left: 0.15rem; }
+    button.price-badge.pop { animation: pop 0.45s ease; }
+    .price-val.ask { font-size: 0.85rem; letter-spacing: 0.05em; }
+
+    /* ====== CARRITO ====== */
+    .cart-fab { position: fixed; right: 2rem; bottom: 2rem; z-index: 120; display: flex; align-items: center; gap: 0.7rem; background: var(--gold); color: var(--black); border: none; border-radius: 100px; padding: 0.8rem 1.3rem 0.8rem 1.1rem; font-family: var(--font-condensed); font-size: 1rem; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; box-shadow: 0 12px 34px rgba(245,197,24,0.3); transform: translateY(160%); transition: transform 0.5s cubic-bezier(.2,.8,.2,1); }
+    .cart-fab.show { transform: none; }
+    .cart-fab.bump { animation: bump 0.5s ease; }
+    .fab-count { background: var(--black); color: var(--gold); min-width: 22px; height: 22px; border-radius: 11px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.78rem; padding: 0 6px; }
+    .scroll-top { right: auto; left: 2rem; }
+
+    .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.35s; z-index: 200; }
+    .cart-overlay.open { opacity: 1; pointer-events: auto; }
+    .cart-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(470px, 100%); background: var(--dark); border-left: 1px solid var(--dark-3); z-index: 201; transform: translateX(105%); transition: transform 0.45s cubic-bezier(.2,.8,.2,1); display: flex; flex-direction: column; }
+    .cart-drawer.open { transform: none; }
+    body.no-scroll { overflow: hidden; }
+    .cart-head { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.4rem; border-bottom: 1px solid var(--dark-3); }
+    .cart-head h3 { font-family: var(--font-display); font-size: 1.8rem; font-weight: 400; letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.6rem; }
+    .cart-head h3 i { color: var(--gold); font-size: 1.1rem; }
+    .cart-head .accent { color: var(--gold); }
+    .cart-close { background: none; border: 1px solid var(--dark-3); color: var(--white); width: 38px; height: 38px; cursor: pointer; border-radius: 2px; font-size: 1rem; transition: border-color 0.2s, color 0.2s; }
+    .cart-close:hover { border-color: var(--gold); color: var(--gold); }
+    .cart-body { flex: 1; overflow-y: auto; padding: 0.6rem 1.4rem 1.5rem; overscroll-behavior: contain; }
+    .cart-empty { text-align: center; color: var(--gray-2); padding: 3rem 1rem; display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+    .cart-empty > i { font-size: 2.5rem; color: var(--dark-3); }
+    .cart-line { display: flex; gap: 0.75rem; align-items: center; padding: 0.85rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); animation: fadeUp 0.35s ease both; }
+    .cart-line-info { flex: 1; min-width: 0; }
+    .cart-line-name { font-family: var(--font-condensed); font-weight: 700; letter-spacing: 0.05em; font-size: 0.95rem; line-height: 1.25; }
+    .cart-line-variant { font-size: 0.75rem; color: var(--gray-2); }
+    .cart-line-price { font-family: var(--font-condensed); font-weight: 700; color: var(--gold); white-space: nowrap; min-width: 70px; text-align: right; }
+    .qty { display: flex; align-items: center; border: 1px solid var(--dark-3); border-radius: 2px; flex-shrink: 0; }
+    .qty button { background: none; border: none; color: var(--white); width: 30px; height: 30px; cursor: pointer; font-size: 0.75rem; transition: color 0.2s; }
+    .qty button:hover { color: var(--gold); }
+    .qty span { min-width: 22px; text-align: center; font-family: var(--font-condensed); font-weight: 700; }
+
+    .form-block { margin-top: 1.4rem; display: flex; flex-direction: column; gap: 0.65rem; }
+    .form-block.tight { margin-top: 0.2rem; }
+    .form-title { font-family: var(--font-condensed); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); display: flex; gap: 0.45rem; align-items: center; }
+    .field { width: 100%; background: var(--black); border: 1px solid var(--dark-3); color: var(--white); padding: 0.75rem 0.9rem; font-family: var(--font-body); font-size: 16px; border-radius: 2px; outline: none; transition: border-color 0.2s; }
+    .field::placeholder { color: var(--gray-3); }
+    .field:focus { border-color: var(--gold); }
+    .field.invalid { border-color: #e5484d; }
+    textarea.field { resize: vertical; min-height: 70px; }
+    .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .seg label { cursor: pointer; position: relative; }
+    .seg input { position: absolute; opacity: 0; pointer-events: none; }
+    .seg span { display: flex; align-items: center; justify-content: center; gap: 0.5rem; border: 1px solid var(--dark-3); padding: 0.7rem; font-family: var(--font-condensed); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.85rem; color: var(--gray-2); transition: all 0.2s; border-radius: 2px; }
+    .seg input:checked + span { border-color: var(--gold); color: var(--black); background: var(--gold); }
+    .seg input:focus-visible + span { outline: 2px solid var(--white); outline-offset: 2px; }
+    .loc-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .btn-ghost { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; background: transparent; border: 1px solid rgba(245,197,24,0.4); color: var(--gold); padding: 0.65rem 0.8rem; font-family: var(--font-condensed); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.78rem; cursor: pointer; border-radius: 2px; transition: background 0.2s; white-space: nowrap; }
+    .btn-ghost:hover { background: rgba(245,197,24,0.1); }
+    .btn-ghost:disabled { opacity: 0.5; cursor: wait; }
+    #deliveryMap { height: 220px; border: 1px solid var(--dark-3); border-radius: 2px; background: var(--dark-2); z-index: 0; }
+    #deliveryMap.unavailable { display: none; }
+    .leaflet-container { font-family: var(--font-body); background: var(--dark-2); }
+    #deliveryMap .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9) saturate(0.4); }
+    .store-pin { width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: var(--black); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; box-shadow: 0 0 0 4px rgba(245,197,24,0.25); }
+    .map-hint { font-size: 0.75rem; color: var(--gray-3); display: flex; gap: 0.4rem; align-items: baseline; }
+    .delivery-info { display: flex; align-items: center; gap: 0.6rem; padding: 0.75rem 0.9rem; background: rgba(245,197,24,0.06); border: 1px solid rgba(245,197,24,0.2); font-size: 0.85rem; border-radius: 2px; color: var(--gray-1); }
+    .delivery-info > i { color: var(--gold); }
+    .delivery-info.warn { background: rgba(229,72,77,0.08); border-color: rgba(229,72,77,0.35); }
+    .delivery-info.warn > i { color: #ff6b6b; }
+    .delivery-info[hidden] { display: none; }
+    .cart-foot { border-top: 1px solid var(--dark-3); padding: 1rem 1.4rem 1.2rem; background: var(--dark-2); }
+    .sum-row { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.9rem; color: var(--gray-2); padding: 0.1rem 0; }
+    .sum-row.total { color: var(--white); font-family: var(--font-display); font-size: 1.7rem; letter-spacing: 0.04em; padding-top: 0.35rem; }
+    .sum-row.total span:last-child { color: var(--gold); }
+    .send-btn { width: 100%; margin-top: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 0.6rem; background: var(--green-wa); color: #fff; border: none; padding: 1rem; font-family: var(--font-condensed); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; font-size: 1rem; cursor: pointer; border-radius: 2px; transition: filter 0.2s, transform 0.2s; }
+    .send-btn i { font-size: 1.3rem; }
+    .send-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .form-error { color: #ff6b6b; font-size: 0.82rem; margin-top: 0.5rem; }
+    .toast { position: fixed; left: 50%; bottom: 6.5rem; transform: translate(-50%, 20px); background: var(--white); color: var(--black); padding: 0.7rem 1.2rem; font-family: var(--font-condensed); font-weight: 700; letter-spacing: 0.05em; border-radius: 100px; opacity: 0; transition: opacity 0.3s, transform 0.3s; z-index: 300; pointer-events: none; display: flex; gap: 0.5rem; align-items: center; white-space: nowrap; max-width: calc(100% - 32px); overflow: hidden; text-overflow: ellipsis; }
+    .toast i { color: var(--green-wa); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
     /* ====== ANIMATIONS ====== */
+    @keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.15); } 100% { transform: scale(1); } }
+    @keyframes bump { 0%, 100% { transform: scale(1); } 30% { transform: scale(1.12); } 60% { transform: scale(0.96); } }
+    @keyframes tap { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
@@ -291,7 +400,20 @@
       .footer-bottom { padding: 1.2rem 1.2rem; }
       .footer-bottom-inner { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
       .footer-bottom-links { gap: 1rem; }
-      .scroll-top { bottom: 1.2rem; right: 1.2rem; width: 40px; height: 40px; }
+      .scroll-top { bottom: 1.2rem; left: 1.2rem; right: auto; width: 40px; height: 40px; }
+      .cart-fab { right: 1rem; bottom: 1rem; padding: 0.75rem 1.1rem 0.75rem 1rem; }
+      .cart-head, .cart-foot { padding-left: 1rem; padding-right: 1rem; }
+      .cart-body { padding: 0.6rem 1rem 1.5rem; }
+      .marquee { padding: 2.2rem 0; }
+      .add-hint { font-size: 0.68rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .js .reveal { opacity: 1; transform: none; filter: none; transition: none; }
+      .marquee-track { transform: none !important; }
+      .hero-content, .hero-glow { transform: none !important; opacity: 1 !important; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
     }
 
     @media (max-width: 480px) {
@@ -344,6 +466,7 @@
   </style>
 </head>
 <body>
+<div class="scroll-progress" id="scrollProgress"></div>
 <!-- HEADER -->
 <header class="site-header" id="header">
   <div class="header-inner">
@@ -357,8 +480,8 @@
       <a href="#nosotros" class="nav-link"><i class="fa-solid fa-store"></i> Nosotros</a>
       <a href="#contacto" class="nav-link"><i class="fa-solid fa-location-dot"></i> Contacto</a>
     </nav>
-    <a href="https://wa.me/5493834603097?text=Hola%20quiero%20hacer%20un%20pedido%20en%20Black%20Burger" target="_blank" class="btn-order">
-      <i class="fa-brands fa-whatsapp"></i> Pedir ahora
+    <a href="#menu" class="btn-order" data-open-cart>
+      <i class="fa-solid fa-bag-shopping"></i> Pedir ahora
     </a>
     <button class="hamburger" id="hamburger" aria-label="Menú"><span></span><span></span><span></span></button>
   </div>
@@ -367,7 +490,7 @@
     <a href="#menu" class="mobile-link"><i class="fa-solid fa-book-open"></i> Menú</a>
     <a href="#nosotros" class="mobile-link"><i class="fa-solid fa-store"></i> Nosotros</a>
     <a href="#contacto" class="mobile-link"><i class="fa-solid fa-location-dot"></i> Contacto</a>
-    <a href="https://wa.me/5493834603097" target="_blank" class="mobile-cta"><i class="fa-brands fa-whatsapp"></i> Pedir por WhatsApp</a>
+    <a href="#menu" class="mobile-cta" data-open-cart><i class="fa-solid fa-bag-shopping"></i> Armar mi pedido</a>
   </div>
 </header>
 
@@ -390,16 +513,16 @@
     <p class="hero-sub">Hamburguesas artesanales. Sabor intenso. Experiencia premium.</p>
     <div class="hero-actions">
       <a href="#menu" class="cta-primary"><span>Ver Menú</span><i class="fa-solid fa-arrow-down"></i></a>
-      <a href="https://wa.me/5493834603097?text=Hola%20quiero%20hacer%20un%20pedido%20en%20Black%20Burger" target="_blank" class="cta-secondary">
-        <i class="fa-brands fa-whatsapp wa-green"></i><span>Hacer un pedido</span>
+      <a href="#menu" class="cta-secondary" data-open-cart>
+        <i class="fa-brands fa-whatsapp wa-green"></i><span>Armar mi pedido</span>
       </a>
     </div>
     <div class="hero-stats">
-      <div class="stat"><i class="fa-solid fa-burger stat-icon"></i><span class="stat-number">8+</span><span class="stat-label">Burgers</span></div>
+      <div class="stat"><i class="fa-solid fa-burger stat-icon"></i><span class="stat-number" id="statCats" data-suffix="">9</span><span class="stat-label">Categorías</span></div>
       <div class="stat-divider"></div>
-      <div class="stat"><i class="fa-solid fa-utensils stat-icon"></i><span class="stat-number">30+</span><span class="stat-label">Productos</span></div>
+      <div class="stat"><i class="fa-solid fa-utensils stat-icon"></i><span class="stat-number" id="statProducts" data-suffix="+">50+</span><span class="stat-label">Productos</span></div>
       <div class="stat-divider"></div>
-      <div class="stat"><i class="fa-solid fa-hand-sparkles stat-icon"></i><span class="stat-number">100%</span><span class="stat-label">Artesanal</span></div>
+      <div class="stat"><i class="fa-solid fa-hand-sparkles stat-icon"></i><span class="stat-number" data-count="100" data-suffix="%">100%</span><span class="stat-label">Artesanal</span></div>
     </div>
   </div>
   <div class="hero-scroll"><span>Scrollear</span><div class="scroll-line"></div></div>
@@ -434,7 +557,10 @@
       <button class="cat-btn" data-cat="zappings"><i class="fa-solid fa-star"></i> Zappings</button>
       <button class="cat-btn" data-cat="bebidas"><i class="fa-solid fa-bottle-water"></i> Bebidas</button>
       <button class="cat-btn" data-cat="extras"><i class="fa-solid fa-circle-plus"></i> Extras</button>
+      <button class="cat-btn" data-cat="postres"><i class="fa-solid fa-ice-cream"></i> Postres</button>
     </div>
+
+    <div class="add-hint"><i class="fa-solid fa-hand-pointer"></i> Tocá un precio para sumarlo a tu pedido</div>
 
     <div class="size-legend" id="sizeLegend">
       <span><i class="fa-solid fa-circle-info"></i> S = Simple</span>
@@ -442,135 +568,7 @@
       <span><i class="fa-solid fa-circle-info"></i> T = Triple carne</span>
     </div>
 
-    <div class="menu-list">
-
-      <!-- ===== BURGERS ===== -->
-      <div class="menu-item burgers" data-cat="burgers">
-        <div class="item-content">
-          <div class="item-info">
-            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER CLÁSICA</h3></div>
-            <p class="item-desc">Pan 120g, carne 120g, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.</p>
-          </div>
-          <div class="item-prices">
-            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$9.000</span></div>
-            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$10.000</span></div>
-            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$11.000</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="menu-item burgers" data-cat="burgers">
-        <div class="item-content">
-          <div class="item-info">
-            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER PROVO</h3></div>
-            <p class="item-desc">Pan 120g, carne 120g, huevo, provoleta, salteado de morrón, tomate y papas fritas.</p>
-          </div>
-          <div class="item-prices">
-            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$9.000</span></div>
-            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$10.000</span></div>
-            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$11.000</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="menu-item burgers" data-cat="burgers">
-        <div class="item-content">
-          <div class="item-info">
-            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER DE LA CASA</h3></div>
-            <p class="item-desc">Pan 120g, carne 120g, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.</p>
-          </div>
-          <div class="item-prices">
-            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$9.000</span></div>
-            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$10.000</span></div>
-            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$11.000</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="menu-item burgers featured" data-cat="burgers">
-        <div class="featured-tag"><i class="fa-solid fa-star"></i> Destacado de la casa</div>
-        <div class="item-content">
-          <div class="item-info">
-            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER BLACK</h3></div>
-            <p class="item-desc">Pan 120g, carne 120g, queso tybo, panceta, salsa Big Master y papas fritas.</p>
-          </div>
-          <div class="item-prices">
-            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$9.000</span></div>
-            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$10.000</span></div>
-            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$11.000</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="menu-item burgers" data-cat="burgers">
-        <div class="item-content">
-          <div class="item-info">
-            <div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-burger"></i></div><h3 class="item-name">BURGER MI GUSTO CULPOSO</h3></div>
-            <p class="item-desc">Pan 120g, carne 120g, panceta, cheddar, huevo, queso tybo, jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.</p>
-          </div>
-          <div class="item-prices">
-            <div class="price-badge"><span class="price-label">S</span><span class="price-val">$9.000</span></div>
-            <div class="price-badge"><span class="price-label">D</span><span class="price-val">$10.000</span></div>
-            <div class="price-badge"><span class="price-label">T</span><span class="price-val">$11.000</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ===== LOMITOS ===== -->
-      <div class="menu-item lomitos hidden" data-cat="lomitos"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO CLÁSICO</h3></div><p class="item-desc">Pan, carne 200g, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
-      <div class="menu-item lomitos hidden" data-cat="lomitos"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO PROVO</h3></div><p class="item-desc">Pan, carne 200g, huevo, provoleta, salteado de morrón, tomate y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
-      <div class="menu-item lomitos hidden" data-cat="lomitos"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO DE LA CASA</h3></div><p class="item-desc">Pan, carne 200g, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
-      <div class="menu-item lomitos featured hidden" data-cat="lomitos"><div class="featured-tag"><i class="fa-solid fa-star"></i> Destacado</div><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO BLACK</h3></div><p class="item-desc">Pan, carne 200g, queso tybo, panceta, salsa Big Master y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
-      <div class="menu-item lomitos hidden" data-cat="lomitos"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bread-slice"></i></div><h3 class="item-name">LOMITO MI GUSTO CULPOSO</h3></div><p class="item-desc">Pan, carne 200g, panceta, cheddar, huevo, queso tybo, jamón, cebolla, crispy, ketchup, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$17.000</span></div></div></div></div>
-
-      <!-- ===== PIZZAS ===== -->
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">MUZARELLA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$13.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$8.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">DOBLE MUZZA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$19.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$11.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">ESPECIAL</h3></div><p class="item-desc">Jamón, muzzarella y aceitunas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$16.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$9.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">FUGAZZETA</h3></div><p class="item-desc">Cebolla, muzzarella y orégano.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$14.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$8.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">NAPOLITANA</h3></div><p class="item-desc">Tomate fresco, ajo y muzzarella.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$16.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$9.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">CALABREZA</h3></div><p class="item-desc">Longaniza, muzzarella y aceitunas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$16.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$9.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">ARGENTINA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$18.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$10.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">PALMITO</h3></div><p class="item-desc">Palmitos, muzzarella y salsa de tomate.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$17.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$10.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">CHOCLO</h3></div><p class="item-desc">Choclo, muzzarella y salsa de tomate.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$16.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$9.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">TERNERA</h3></div><p class="item-desc">Ternera, muzzarella y salsa especial.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$18.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$10.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">CHAMPIÑÓN</h3></div><p class="item-desc">Champiñones, muzzarella y salsa de tomate.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$18.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$10.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">CUATRO QUESOS</h3></div><p class="item-desc">Mezcla de quesos seleccionados.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$19.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$11.000</span></div></div></div></div>
-      <div class="menu-item pizzas featured hidden" data-cat="pizzas"><div class="featured-tag"><i class="fa-solid fa-star"></i> Destacado</div><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">AMERICANA</h3></div><p class="item-desc">Panceta, cheddar y muzzarella.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$21.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$12.000</span></div></div></div></div>
-      <div class="menu-item pizzas hidden" data-cat="pizzas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-pizza-slice"></i></div><h3 class="item-name">LOMO PIZZA</h3></div><p class="item-desc">Lomo, muzzarella y salsa especial.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">C</span><span class="price-val">$36.000</span></div><div class="price-badge"><span class="price-label">M</span><span class="price-val">$21.000</span></div></div></div></div>
-
-      <!-- ===== MILANESAS ===== -->
-      <div class="menu-item milanesas hidden" data-cat="milanesas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA CLÁSICA</h3></div><p class="item-desc">Pan, carne, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
-      <div class="menu-item milanesas hidden" data-cat="milanesas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA PROVO</h3></div><p class="item-desc">Pan, carne, huevo, provoleta, salteado de morrón, tomate y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
-      <div class="menu-item milanesas hidden" data-cat="milanesas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA DE LA CASA</h3></div><p class="item-desc">Pan, carne, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
-      <div class="menu-item milanesas featured hidden" data-cat="milanesas"><div class="featured-tag"><i class="fa-solid fa-star"></i> Destacado</div><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA BLACK</h3></div><p class="item-desc">Pan, carne 200g, queso tybo, panceta, salsa Big Master y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$16.000</span></div></div></div></div>
-      <div class="menu-item milanesas hidden" data-cat="milanesas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-drumstick-bite"></i></div><h3 class="item-name">MILANESA MI GUSTO CULPOSO</h3></div><p class="item-desc">Pan, carne, panceta, cheddar, huevo, queso tybo, jamón, cebolla, crispy, ketchup, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$17.000</span></div></div></div></div>
-
-      <!-- ===== AL PLATO ===== -->
-      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">NAPOLITANA</h3></div><p class="item-desc">Con jamón, muzzarella y salsa de tomate.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$11.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$19.000</span></div></div></div></div>
-      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">AL CABALLO</h3></div><p class="item-desc">Con huevo frito.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$11.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$19.000</span></div></div></div></div>
-      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">CON PAPAS</h3></div><p class="item-desc">Acompañada con papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$11.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$19.000</span></div></div></div></div>
-      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">CON ENSALADA</h3></div><p class="item-desc">Ensalada fresca de la casa.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$11.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$19.000</span></div></div></div></div>
-      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">FUGAZZETA</h3></div><p class="item-desc">Cebolla y muzzarella.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$11.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$19.000</span></div></div></div></div>
-      <div class="menu-item plato hidden" data-cat="plato"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-plate-wheat"></i></div><h3 class="item-name">SUIZA</h3></div><p class="item-desc">Jamón y queso fondue.</p></div><div class="item-prices"><div class="price-badge"><span class="price-label">x1</span><span class="price-val">$11.000</span></div><div class="price-badge"><span class="price-label">x2</span><span class="price-val">$19.000</span></div></div></div></div>
-
-      <!-- ===== ZAPPINGS ===== -->
-      <div class="menu-item zappings hidden" data-cat="zappings"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-star"></i></div><h3 class="item-name">ZAPPING CLÁSICA</h3></div><p class="item-desc">Pan, carne, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$13.000</span></div></div></div></div>
-      <div class="menu-item zappings hidden" data-cat="zappings"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-star"></i></div><h3 class="item-name">ZAPPING GUSTO CULPOSO</h3></div><p class="item-desc">Pan, carne, panceta, cheddar, huevo, queso tybo, jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$15.000</span></div></div></div></div>
-      <div class="menu-item zappings hidden" data-cat="zappings"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-star"></i></div><h3 class="item-name">HAMBURGPIZZA</h3></div><p class="item-desc">La combinación perfecta entre burger y pizza.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$18.000</span></div></div></div></div>
-
-      <!-- ===== BEBIDAS ===== -->
-      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bottle-water"></i></div><h3 class="item-name">COCA-COLA 1,5L</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$6.000</span></div></div></div></div>
-      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bottle-water"></i></div><h3 class="item-name">FANTA 1,5L</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$6.000</span></div></div></div></div>
-      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bottle-water"></i></div><h3 class="item-name">SPRITE 1,5L</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$6.000</span></div></div></div></div>
-      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-beer-mug-empty"></i></div><h3 class="item-name">CERVEZA BRAHMA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$6.500</span></div></div></div></div>
-      <div class="menu-item bebidas hidden" data-cat="bebidas"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-beer-mug-empty"></i></div><h3 class="item-name">CERVEZA CORONA</h3></div></div><div class="item-prices"><div class="price-badge"><span class="price-val">$8.000</span></div></div></div></div>
-
-      <!-- ===== EXTRAS ===== -->
-      <div class="menu-item extras hidden" data-cat="extras"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bowl-food"></i></div><h3 class="item-name">PORCIÓN DE PAPAS COMÚN</h3></div><p class="item-desc">Pote de mayonesa casera incluido.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$6.000</span></div></div></div></div>
-      <div class="menu-item extras hidden" data-cat="extras"><div class="item-content"><div class="item-info"><div class="item-name-row"><div class="item-icon"><i class="fa-solid fa-bowl-food"></i></div><h3 class="item-name">PORCIÓN DE PAPAS ESPECIAL</h3></div><p class="item-desc">Con cheddar y panceta crocante.</p></div><div class="item-prices"><div class="price-badge"><span class="price-val">$7.500</span></div></div></div></div>
-
-    </div><!-- /menu-list -->
+    <div class="menu-list" id="menuList"></div><!-- /menu-list (se genera desde MENU en el script) -->
 
     <div class="menu-cta">
       <p><i class="fa-solid fa-circle-info"></i> ¿No encontrás lo que buscás? Consultanos directamente</p>
@@ -622,6 +620,16 @@
   </div>
 </section>
 
+<!-- MARQUEE (se desplaza con el scroll) -->
+<section class="marquee" aria-hidden="true">
+  <div class="marquee-track" data-speed="0.35">
+    <span>Black Burger</span><i class="fa-solid fa-burger"></i><span class="outline">Artesanal</span><i class="fa-solid fa-fire-flame-curved"></i><span>Premium</span><i class="fa-solid fa-star"></i><span class="outline">Catamarca</span><i class="fa-solid fa-burger"></i><span>Black Burger</span><i class="fa-solid fa-fire-flame-curved"></i><span class="outline">Artesanal</span>
+  </div>
+  <div class="marquee-track reverse" data-speed="-0.35">
+    <span class="outline">Lomitos</span><i class="fa-solid fa-bread-slice"></i><span>Milanesas</span><i class="fa-solid fa-pizza-slice"></i><span class="outline">Pizzas</span><i class="fa-solid fa-star"></i><span>Zappings</span><i class="fa-solid fa-ice-cream"></i><span class="outline">Postres</span><i class="fa-solid fa-burger"></i><span>Burgers</span>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="cta-section">
   <div class="cta-glow"></div>
@@ -629,7 +637,7 @@
     <span class="cta-eyebrow"><i class="fa-solid fa-bolt"></i> ¿Listo para pedir?</span>
     <h2 class="cta-title">Tu próxima<br/><span class="accent">burger te espera.</span></h2>
     <p class="cta-sub"><i class="fa-solid fa-check-circle"></i> Pedí directo por WhatsApp, rápido y sin complicaciones.</p>
-    <a href="https://wa.me/5493834603097?text=Hola%20quiero%20hacer%20un%20pedido%20en%20Black%20Burger" target="_blank" class="cta-wa-btn">
+    <a href="#menu" class="cta-wa-btn" data-open-cart>
       <div class="wa-icon"><i class="fa-brands fa-whatsapp"></i></div>
       <div class="wa-text">
         <span class="wa-small"><i class="fa-solid fa-mobile-screen"></i> Abrí WhatsApp</span>
@@ -692,29 +700,600 @@
   </button>
 </footer>
 
+<!-- ====== CARRITO ====== -->
+<button class="cart-fab" id="cartFab" aria-label="Ver mi pedido">
+  <i class="fa-solid fa-bag-shopping"></i>
+  <span class="fab-count" id="fabCount">0</span>
+  <span class="fab-total" id="fabTotal">$0</span>
+</button>
+
+<div class="cart-overlay" id="cartOverlay"></div>
+<aside class="cart-drawer" id="cartDrawer" aria-label="Tu pedido" aria-hidden="true">
+  <div class="cart-head">
+    <h3><i class="fa-solid fa-bag-shopping"></i> Tu <span class="accent">pedido</span></h3>
+    <button class="cart-close" id="cartClose" aria-label="Cerrar"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
+  <div class="cart-body">
+    <div id="cartLines"></div>
+    <div class="cart-empty" id="cartEmpty">
+      <i class="fa-solid fa-burger"></i>
+      <p>Tu pedido está vacío.</p>
+      <a href="#menu" class="btn-ghost" id="cartGoMenu"><i class="fa-solid fa-book-open"></i> Ver el menú</a>
+    </div>
+
+    <div id="checkout">
+      <div class="form-block">
+        <div class="form-title"><i class="fa-solid fa-user"></i> Tus datos</div>
+        <input class="field" id="fName" type="text" placeholder="Nombre y apellido *" autocomplete="name" />
+      </div>
+
+      <div class="form-block">
+        <div class="form-title"><i class="fa-solid fa-motorcycle"></i> Entrega</div>
+        <div class="seg">
+          <label><input type="radio" name="mode" value="delivery" checked /><span><i class="fa-solid fa-motorcycle"></i> Delivery</span></label>
+          <label><input type="radio" name="mode" value="retiro" /><span><i class="fa-solid fa-store"></i> Retiro</span></label>
+        </div>
+
+        <div id="deliveryFields" class="form-block tight">
+          <input class="field" id="fAddress" type="text" placeholder="Calle, número y barrio *" autocomplete="street-address" />
+          <input class="field" id="fRef" type="text" placeholder="Referencias (casa, portón, piso…)" />
+          <div class="loc-row">
+            <button type="button" class="btn-ghost" id="btnGeo"><i class="fa-solid fa-location-crosshairs"></i> Usar mi ubicación</button>
+            <button type="button" class="btn-ghost" id="btnSearch"><i class="fa-solid fa-magnifying-glass-location"></i> Buscar dirección</button>
+          </div>
+          <div id="deliveryMap"></div>
+          <p class="map-hint"><i class="fa-solid fa-circle-info"></i> Tocá el mapa o arrastrá el pin para marcar tu casa exacta.</p>
+          <div class="delivery-info" id="deliveryInfo"><i class="fa-solid fa-route"></i> <span>Marcá tu ubicación para calcular el envío ($2.000 por km).</span></div>
+        </div>
+        <div id="pickupInfo" class="delivery-info" hidden><i class="fa-solid fa-store"></i> <span>Retirás en Tristán Lobo, San Isidro. Sin costo de envío.</span></div>
+      </div>
+
+      <div class="form-block">
+        <div class="form-title"><i class="fa-solid fa-wallet"></i> Pago</div>
+        <div class="seg">
+          <label><input type="radio" name="pay" value="Efectivo" checked /><span><i class="fa-solid fa-money-bill-wave"></i> Efectivo</span></label>
+          <label><input type="radio" name="pay" value="Transferencia" /><span><i class="fa-solid fa-building-columns"></i> Transferencia</span></label>
+        </div>
+        <input class="field" id="fCash" type="text" inputmode="numeric" placeholder="¿Con cuánto abonás? (para el vuelto)" />
+      </div>
+
+      <div class="form-block">
+        <div class="form-title"><i class="fa-solid fa-pen"></i> Aclaraciones</div>
+        <textarea class="field" id="fNotes" placeholder="Ej: sin cebolla, bien cocida…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="cart-foot" id="cartFoot">
+    <div class="sum-row"><span>Subtotal</span><span id="sumSubtotal">$0</span></div>
+    <div class="sum-row" id="sumShipRow"><span id="sumShipLabel">Envío</span><span id="sumShip">—</span></div>
+    <div class="sum-row total"><span>Total</span><span id="sumTotal">$0</span></div>
+    <p class="form-error" id="formError" hidden></p>
+    <button class="send-btn" id="sendBtn"><i class="fa-brands fa-whatsapp"></i> Enviar pedido por WhatsApp</button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"><i class="fa-solid fa-check"></i> <span></span></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-  const header = document.getElementById('header');
-  window.addEventListener('scroll', () => { header.classList.toggle('scrolled', window.scrollY > 50); });
+/* =========================================================
+   CONFIGURACIÓN — editar acá precios de envío y datos del local
+   ========================================================= */
+const WA_NUMBER = '5493834603097';
+const STORE = { lat: -28.4616, lng: -65.7242, label: 'Tristán Lobo, San Isidro' }; // ubicación del local (ajustar al punto exacto)
+const DELIVERY = {
+  pricePerKm: 2000,   // $ por kilómetro
+  minFee: 2000,       // envío mínimo
+  maxKm: 15          // más lejos que esto: "consultar"
+};
 
-  const hamburger = document.getElementById('hamburger');
-  const mobileNav = document.getElementById('mobileNav');
-  hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); mobileNav.classList.toggle('open'); });
-  mobileNav.querySelectorAll('a').forEach(a => { a.addEventListener('click', () => { hamburger.classList.remove('active'); mobileNav.classList.remove('open'); }); });
+/* =========================================================
+   MENÚ — cada producto tiene variantes {k: etiqueta corta, n: nombre, p: precio}
+   p: null = precio a confirmar (se muestra "Consultar")
+   ========================================================= */
+const SDT = (s, d, t) => [{ k: 'S', n: 'Simple', p: s }, { k: 'D', n: 'Doble', p: d }, { k: 'T', n: 'Triple', p: t }];
+const SD  = (s, d) => [{ k: 'S', n: 'Simple', p: s }, { k: 'D', n: 'Doble', p: d }];
+const ONE = p => [{ k: '', n: '', p }];
+const X12 = (a, b) => [{ k: 'x1', n: 'x1', p: a }, { k: 'x2', n: 'x2', p: b }];
+const CM  = (c, m) => [{ k: 'C', n: 'Entera', p: c }, { k: 'M', n: 'Media', p: m }];
+const DRINK = [{ k: '1,5L', n: '1,5L', p: 5000 }, { k: '500ml', n: '500ml', p: 3000 }];
 
-  const sizeLegend = document.getElementById('sizeLegend');
-  document.querySelectorAll('.cat-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const cat = btn.dataset.cat;
-      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      document.querySelectorAll('.menu-item').forEach(item => { item.classList.toggle('hidden', item.dataset.cat !== cat); });
-      if (sizeLegend) sizeLegend.style.display = cat === 'burgers' ? 'flex' : 'none';
-    });
+const CATS = {
+  burgers:   { icon: 'fa-burger',         legend: true },
+  lomitos:   { icon: 'fa-bread-slice' },
+  pizzas:    { icon: 'fa-pizza-slice' },
+  milanesas: { icon: 'fa-drumstick-bite' },
+  plato:     { icon: 'fa-plate-wheat',    prefix: 'Milanesa al plato' },
+  zappings:  { icon: 'fa-star' },
+  bebidas:   { icon: 'fa-bottle-water' },
+  extras:    { icon: 'fa-circle-plus' },
+  postres:   { icon: 'fa-ice-cream' }
+};
+
+const MENU = [
+  // BURGERS
+  { id: 'b-clasica', cat: 'burgers', name: 'Burger Clásica', desc: 'Pan 120g, carne 120g, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.', v: SDT(10000, 12000, 14000) },
+  { id: 'b-provo', cat: 'burgers', name: 'Burger Provo', desc: 'Pan 120g, carne 120g, huevo, provoleta, salteado de morrón, tomate y papas fritas.', v: SDT(10000, 12000, 14000) },
+  { id: 'b-casa', cat: 'burgers', name: 'Burger de la Casa', desc: 'Pan 120g, carne 120g, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.', v: SDT(10000, 12000, 14000) },
+  { id: 'b-black', cat: 'burgers', name: 'Burger Black', featured: 'Destacado de la casa', desc: 'Pan 120g, carne 120g, queso tybo, panceta, salsa Big Master y papas fritas.', v: SDT(10000, 12000, 14000) },
+  { id: 'b-culposo', cat: 'burgers', name: 'Burger Mi Gusto Culposo', desc: 'Pan 120g, carne 120g, panceta, cheddar, huevo, queso tybo, jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.', v: SDT(10000, 12000, 14000) },
+
+  // LOMITOS
+  { id: 'l-clasico', cat: 'lomitos', name: 'Lomito Clásico', desc: 'Pan, carne 200g, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.', v: ONE(18000) },
+  { id: 'l-provo', cat: 'lomitos', name: 'Lomito Provo', desc: 'Pan, carne 200g, huevo, provoleta, salteado de morrón, tomate y papas fritas.', v: ONE(18000) },
+  { id: 'l-casa', cat: 'lomitos', name: 'Lomito de la Casa', desc: 'Pan, carne 200g, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.', v: ONE(18000) },
+  { id: 'l-black', cat: 'lomitos', name: 'Lomito Black', featured: 'Destacado', desc: 'Pan, carne 200g, queso tybo, panceta, salsa Big Master y papas fritas.', v: ONE(18000) },
+  { id: 'l-culposo', cat: 'lomitos', name: 'Lomito Mi Gusto Culposo', desc: 'Pan, carne 200g, panceta, cheddar, huevo, queso tybo, jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.', v: ONE(18000) },
+
+  // PIZZAS (sin cambios de precio)
+  { id: 'p-muzza', cat: 'pizzas', name: 'Muzzarella', desc: '', v: CM(13000, 8000) },
+  { id: 'p-doble', cat: 'pizzas', name: 'Doble Muzza', desc: '', v: CM(19000, 11000) },
+  { id: 'p-especial', cat: 'pizzas', name: 'Especial', desc: 'Jamón, muzzarella y aceitunas.', v: CM(16000, 9000) },
+  { id: 'p-fugazzeta', cat: 'pizzas', name: 'Fugazzeta', desc: 'Cebolla, muzzarella y orégano.', v: CM(14000, 8000) },
+  { id: 'p-napo', cat: 'pizzas', name: 'Napolitana', desc: 'Tomate fresco, ajo y muzzarella.', v: CM(16000, 9000) },
+  { id: 'p-calabresa', cat: 'pizzas', name: 'Calabresa', desc: 'Longaniza, muzzarella y aceitunas.', v: CM(16000, 9000) },
+  { id: 'p-argentina', cat: 'pizzas', name: 'Argentina', desc: '', v: CM(18000, 10000) },
+  { id: 'p-palmito', cat: 'pizzas', name: 'Palmito', desc: 'Palmitos, muzzarella y salsa de tomate.', v: CM(17000, 10000) },
+  { id: 'p-choclo', cat: 'pizzas', name: 'Choclo', desc: 'Choclo, muzzarella y salsa de tomate.', v: CM(16000, 9000) },
+  { id: 'p-ternera', cat: 'pizzas', name: 'Ternera', desc: 'Ternera, muzzarella y salsa especial.', v: CM(18000, 10000) },
+  { id: 'p-champi', cat: 'pizzas', name: 'Champiñón', desc: 'Champiñones, muzzarella y salsa de tomate.', v: CM(18000, 10000) },
+  { id: 'p-4quesos', cat: 'pizzas', name: 'Cuatro Quesos', desc: 'Mezcla de quesos seleccionados.', v: CM(19000, 11000) },
+  { id: 'p-americana', cat: 'pizzas', name: 'Americana', featured: 'Destacado', desc: 'Panceta, cheddar y muzzarella.', v: CM(21000, 12000) },
+  { id: 'p-lomo', cat: 'pizzas', name: 'Lomo Pizza', desc: 'Lomo, muzzarella y salsa especial.', v: CM(36000, 21000) },
+
+  // MILANESAS (sándwich)
+  { id: 'm-clasica', cat: 'milanesas', name: 'Milanesa Clásica', desc: 'Pan, carne, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.', v: ONE(18000) },
+  { id: 'm-provo', cat: 'milanesas', name: 'Milanesa Provo', desc: 'Pan, carne, huevo, provoleta, salteado de morrón, tomate y papas fritas.', v: ONE(18000) },
+  { id: 'm-casa', cat: 'milanesas', name: 'Milanesa de la Casa', desc: 'Pan, carne, cheddar, panceta, salsa de la casa, cebolla caramelizada, barbacoa y papas fritas.', v: ONE(18000) },
+  { id: 'm-black', cat: 'milanesas', name: 'Milanesa Black', featured: 'Destacado', desc: 'Pan, carne 200g, queso tybo, panceta, salsa Big Master y papas fritas.', v: ONE(18000) },
+  { id: 'm-culposo', cat: 'milanesas', name: 'Milanesa Mi Gusto Culposo', desc: 'Pan, carne, panceta, cheddar, huevo, queso tybo, jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.', v: ONE(18000) },
+
+  // MILANESA AL PLATO
+  { id: 'ap-napo', cat: 'plato', name: 'Napolitana', desc: 'Con jamón, muzzarella y salsa de tomate.', v: X12(14000, 25000) },
+  { id: 'ap-caballo', cat: 'plato', name: 'Al Caballo', desc: 'Con huevo frito.', v: X12(14000, 25000) },
+  { id: 'ap-papas', cat: 'plato', name: 'Con Papas', desc: 'Acompañada con papas fritas.', v: X12(11000, 20000) },
+  { id: 'ap-ensalada', cat: 'plato', name: 'Con Ensalada', desc: 'Ensalada fresca de la casa.', v: X12(11000, 20000) },
+  { id: 'ap-fugazzeta', cat: 'plato', name: 'Fugazzeta', desc: 'Cebolla y muzzarella.', v: X12(13000, 22000) },
+  { id: 'ap-suiza', cat: 'plato', name: 'Suiza', desc: 'Jamón y queso fondue.', v: X12(14000, 25000) },
+
+  // ZAPPINGS
+  { id: 'z-clasica', cat: 'zappings', name: 'Zapping Clásica', desc: 'Pan, carne, huevo, jamón, queso tybo, lechuga, tomate, mayonesa y papas fritas.', v: SD(15000, 21000) },
+  { id: 'z-culposo', cat: 'zappings', name: 'Zapping Gusto Culposo', featured: 'Destacado', desc: 'Pan, carne, panceta, cheddar, huevo, queso tybo, jamón, cebolla caramelizada, ketchup, mayonesa y papas fritas.', v: SD(17000, 23000) },
+  { id: 'z-hamburpizza', cat: 'zappings', name: 'Hamburpizza', desc: 'La combinación perfecta entre burger y pizza.', v: ONE(19000) },
+
+  // BEBIDAS
+  { id: 'd-coca', cat: 'bebidas', name: 'Coca-Cola', desc: '', v: DRINK },
+  { id: 'd-fanta', cat: 'bebidas', name: 'Fanta', desc: '', v: DRINK },
+  { id: 'd-sprite', cat: 'bebidas', name: 'Sprite', desc: '', v: DRINK },
+  { id: 'd-brahma', cat: 'bebidas', name: 'Cerveza Brahma', icon: 'fa-beer-mug-empty', desc: '', v: ONE(6500) },
+  { id: 'd-corona', cat: 'bebidas', name: 'Cerveza Corona', icon: 'fa-beer-mug-empty', desc: '', v: ONE(8000) },
+
+  // EXTRAS
+  { id: 'e-papas', cat: 'extras', name: 'Porción de Papas Común', icon: 'fa-bowl-food', desc: 'Pote de mayonesa casera incluido.', v: ONE(5000) },
+  { id: 'e-papas-esp', cat: 'extras', name: 'Porción de Papas Especial', icon: 'fa-bowl-food', desc: 'Con cheddar y panceta crocante.', v: ONE(6500) },
+  { id: 'e-dip', cat: 'extras', name: 'Dip de Mayo', icon: 'fa-jar', desc: 'Mayonesa casera para acompañar.', v: ONE(1000) },
+  { id: 'e-medallon', cat: 'extras', name: 'Medallón de Carne', icon: 'fa-burger', desc: 'Sumale carne extra a tu burger.', v: ONE(2000) },
+
+  // POSTRES (precio a confirmar)
+  { id: 'po-chocotorta', cat: 'postres', name: 'Chocotorta', desc: '', v: ONE(null) },
+  { id: 'po-oreo', cat: 'postres', name: 'Oreo', desc: '', v: ONE(null) },
+  { id: 'po-flan', cat: 'postres', name: 'Flan', desc: '', v: ONE(null) },
+  { id: 'po-frutas', cat: 'postres', name: 'Ensalada de Frutas', desc: '', v: ONE(null) }
+];
+const MENU_BY_ID = Object.fromEntries(MENU.map(i => [i.id, i]));
+
+/* ========================================================= utilidades */
+const $ = s => document.querySelector(s);
+const fmt = n => '$' + Math.round(n).toLocaleString('es-AR');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+let toastTimer;
+function toast(msg) {
+  const t = $('#toast'); t.querySelector('span').textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* ========================================================= header / nav */
+const header = $('#header');
+const hamburger = $('#hamburger');
+const mobileNav = $('#mobileNav');
+hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); mobileNav.classList.toggle('open'); });
+mobileNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { hamburger.classList.remove('active'); mobileNav.classList.remove('open'); }));
+const scrollTopBtn = $('#scrollTop');
+scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+/* ========================================================= reveal on scroll */
+const revealObserver = 'IntersectionObserver' in window
+  ? new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); revealObserver.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' })
+  : null;
+function observeReveal(el) { if (revealObserver) revealObserver.observe(el); else el.classList.add('in'); }
+
+[
+  ['.feature-item', 'reveal', 0.08],
+  ['.section-header > *', 'reveal', 0.12],
+  ['.cat-tabs', 'reveal', 0],
+  ['.add-hint', 'reveal', 0],
+  ['.menu-cta', 'reveal', 0],
+  ['.about-label', 'reveal reveal-scale', 0],
+  ['.about-title', 'reveal reveal-left', 0],
+  ['.about-p', 'reveal reveal-left', 0.12],
+  ['.value', 'reveal reveal-left', 0.1],
+  ['.about-visual', 'reveal reveal-right', 0],
+  ['.cta-inner > *', 'reveal', 0.1],
+  ['.footer-inner > *', 'reveal', 0.12],
+  ['.footer-bottom-inner', 'reveal', 0]
+].forEach(([sel, cls, step]) => {
+  document.querySelectorAll(sel).forEach((el, i) => {
+    el.classList.add(...cls.split(' '));
+    el.style.setProperty('--d', (i * step).toFixed(2) + 's');
+    observeReveal(el);
   });
+});
 
-  const scrollTop = document.getElementById('scrollTop');
-  window.addEventListener('scroll', () => { scrollTop.classList.toggle('visible', window.scrollY > 400); });
-  scrollTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+/* ========================================================= contadores del hero */
+$('#statCats').dataset.count = Object.keys(CATS).length;
+$('#statProducts').dataset.count = Math.floor(MENU.length / 10) * 10;
+document.querySelectorAll('[data-count]').forEach(el => {
+  const target = +el.dataset.count, suffix = el.dataset.suffix || '';
+  if (reduceMotion) { el.textContent = target + suffix; return; }
+  const t0 = performance.now() + 600, dur = 1400;
+  el.textContent = '0' + suffix;
+  (function tick(now) {
+    const p = Math.min(Math.max((now - t0) / dur, 0), 1);
+    el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  })(performance.now());
+});
+
+/* ========================================================= efectos ligados al scroll */
+const progress = $('#scrollProgress');
+const heroContent = document.querySelector('.hero-content');
+const heroGlow = document.querySelector('.hero-glow');
+const marqueeTracks = document.querySelectorAll('.marquee-track');
+let ticking = false;
+function onScroll() {
+  const y = window.scrollY, vh = window.innerHeight;
+  const max = document.documentElement.scrollHeight - vh;
+  header.classList.toggle('scrolled', y > 50);
+  scrollTopBtn.classList.toggle('visible', y > 400);
+  progress.style.transform = `scaleX(${max > 0 ? y / max : 0})`;
+  if (!reduceMotion) {
+    if (y < vh * 1.2) {
+      const p = Math.min(y / vh, 1);
+      heroContent.style.transform = `translateY(${y * 0.35}px) scale(${1 - p * 0.06})`;
+      heroContent.style.opacity = String(1 - p * 1.1);
+      heroGlow.style.transform = `translate(-50%, -50%) scale(${1 + p * 0.8})`;
+    }
+    marqueeTracks.forEach(t => {
+      const r = t.parentElement.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < vh) t.style.transform = `translate3d(${(r.top - vh) * +t.dataset.speed}px,0,0)`;
+    });
+  }
+  ticking = false;
+}
+window.addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+window.addEventListener('resize', onScroll);
+onScroll();
+
+/* tilt sutil en la tarjeta de "Nosotros" */
+const vCard = document.querySelector('.visual-card');
+if (vCard && !reduceMotion && window.matchMedia('(hover: hover)').matches) {
+  vCard.addEventListener('mousemove', e => {
+    const r = vCard.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+    vCard.style.transform = `perspective(800px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg)`;
+  });
+  vCard.addEventListener('mouseleave', () => { vCard.style.transform = ''; });
+}
+
+/* ========================================================= render del menú */
+const menuList = $('#menuList');
+const sizeLegend = $('#sizeLegend');
+function renderMenu(cat) {
+  const c = CATS[cat];
+  menuList.innerHTML = MENU.filter(i => i.cat === cat).map((item, i) => `
+    <div class="menu-item reveal${item.featured ? ' featured' : ''}" style="--d:${Math.min(i * 0.06, 0.6).toFixed(2)}s">
+      ${item.featured ? `<div class="featured-tag"><i class="fa-solid fa-star"></i> ${item.featured}</div>` : ''}
+      <div class="item-content">
+        <div class="item-info">
+          <div class="item-name-row"><div class="item-icon"><i class="fa-solid ${item.icon || c.icon}"></i></div><h3 class="item-name">${item.name.toUpperCase()}</h3></div>
+          ${item.desc ? `<p class="item-desc">${item.desc}</p>` : ''}
+        </div>
+        <div class="item-prices">
+          ${item.v.map((v, j) => `
+            <button class="price-badge" data-id="${item.id}" data-v="${j}" aria-label="Agregar ${item.name}${v.n ? ' ' + v.n : ''}">
+              ${v.k ? `<span class="price-label">${v.k}</span>` : ''}
+              <span class="price-val${v.p == null ? ' ask' : ''}">${v.p == null ? 'Consultar' : fmt(v.p)}</span>
+              <i class="fa-solid fa-plus price-add"></i>
+            </button>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+  menuList.querySelectorAll('.reveal').forEach(observeReveal);
+  sizeLegend.style.display = c.legend ? 'flex' : 'none';
+}
+document.querySelectorAll('.cat-btn').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b === btn));
+  renderMenu(btn.dataset.cat);
+}));
+menuList.addEventListener('click', e => {
+  const b = e.target.closest('.price-badge');
+  if (!b) return;
+  addToCart(b.dataset.id, +b.dataset.v);
+  b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+});
+renderMenu('burgers');
+
+/* ========================================================= carrito */
+let cart = store.get('bb_cart_v1', []).filter(l => MENU_BY_ID[l.id] && MENU_BY_ID[l.id].v[l.v]);
+const lineInfo = l => {
+  const item = MENU_BY_ID[l.id], v = item.v[l.v], c = CATS[item.cat];
+  return { name: (c.prefix ? c.prefix + ' ' + item.name.toLowerCase() : item.name), variant: v.n, price: v.p };
+};
+const subtotal = () => cart.reduce((s, l) => s + (lineInfo(l).price || 0) * l.qty, 0);
+const hasUnpriced = () => cart.some(l => lineInfo(l).price == null);
+const count = () => cart.reduce((s, l) => s + l.qty, 0);
+
+function addToCart(id, v) {
+  const l = cart.find(x => x.id === id && x.v === v);
+  if (l) l.qty++; else cart.push({ id, v, qty: 1 });
+  const info = lineInfo({ id, v });
+  toast(`${info.name}${info.variant ? ' (' + info.variant + ')' : ''} agregado`);
+  saveCart(); renderCart();
+  const fab = $('#cartFab'); fab.classList.remove('bump'); void fab.offsetWidth; fab.classList.add('bump');
+}
+function setQty(i, q) { if (q <= 0) cart.splice(i, 1); else cart[i].qty = q; saveCart(); renderCart(); }
+function saveCart() { store.set('bb_cart_v1', cart); }
+
+function renderCart() {
+  const n = count();
+  $('#fabCount').textContent = n;
+  $('#fabTotal').textContent = fmt(subtotal());
+  $('#cartFab').classList.toggle('show', n > 0);
+  $('#cartEmpty').hidden = n > 0;
+  $('#checkout').hidden = n === 0;
+  $('#cartFoot').hidden = n === 0;
+  $('#cartLines').innerHTML = cart.map((l, i) => {
+    const info = lineInfo(l);
+    return `<div class="cart-line">
+      <div class="cart-line-info">
+        <div class="cart-line-name">${info.name}</div>
+        ${info.variant ? `<div class="cart-line-variant">${info.variant}</div>` : ''}
+      </div>
+      <div class="qty">
+        <button data-i="${i}" data-d="-1" aria-label="Quitar uno"><i class="fa-solid ${l.qty === 1 ? 'fa-trash' : 'fa-minus'}"></i></button>
+        <span>${l.qty}</span>
+        <button data-i="${i}" data-d="1" aria-label="Sumar uno"><i class="fa-solid fa-plus"></i></button>
+      </div>
+      <div class="cart-line-price">${info.price == null ? 'A confirmar' : fmt(info.price * l.qty)}</div>
+    </div>`;
+  }).join('');
+  renderTotals();
+}
+$('#cartLines').addEventListener('click', e => {
+  const b = e.target.closest('button[data-i]');
+  if (b) setQty(+b.dataset.i, cart[+b.dataset.i].qty + +b.dataset.d);
+});
+
+/* abrir / cerrar */
+const drawer = $('#cartDrawer'), overlay = $('#cartOverlay');
+function openCart() {
+  drawer.classList.add('open'); overlay.classList.add('open'); document.body.classList.add('no-scroll');
+  drawer.setAttribute('aria-hidden', 'false');
+  if (mode() === 'delivery') setTimeout(initMap, 350);
+}
+function closeCart() {
+  drawer.classList.remove('open'); overlay.classList.remove('open'); document.body.classList.remove('no-scroll');
+  drawer.setAttribute('aria-hidden', 'true');
+}
+$('#cartFab').addEventListener('click', openCart);
+$('#cartClose').addEventListener('click', closeCart);
+overlay.addEventListener('click', closeCart);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCart(); });
+$('#cartGoMenu').addEventListener('click', closeCart);
+document.querySelectorAll('[data-open-cart]').forEach(a => a.addEventListener('click', e => {
+  if (count() > 0) { e.preventDefault(); openCart(); }
+}));
+
+/* ========================================================= datos del cliente */
+const customer = store.get('bb_customer_v1', {});
+const F = { name: $('#fName'), address: $('#fAddress'), ref: $('#fRef'), cash: $('#fCash'), notes: $('#fNotes') };
+['name', 'address', 'ref'].forEach(k => { if (customer[k]) F[k].value = customer[k]; });
+const mode = () => document.querySelector('input[name="mode"]:checked').value;
+const pay = () => document.querySelector('input[name="pay"]:checked').value;
+if (customer.mode) document.querySelector(`input[name="mode"][value="${customer.mode}"]`).checked = true;
+function saveCustomer() {
+  store.set('bb_customer_v1', { name: F.name.value, address: F.address.value, ref: F.ref.value, mode: mode(), loc: delivery.loc });
+}
+Object.values(F).forEach(f => f.addEventListener('input', () => { f.classList.remove('invalid'); saveCustomer(); }));
+
+function syncMode() {
+  const isDel = mode() === 'delivery';
+  $('#deliveryFields').hidden = !isDel;
+  $('#pickupInfo').hidden = isDel;
+  if (isDel && drawer.classList.contains('open')) setTimeout(initMap, 50);
+  renderTotals(); saveCustomer();
+}
+document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', syncMode));
+function syncPay() { F.cash.hidden = pay() !== 'Efectivo'; }
+document.querySelectorAll('input[name="pay"]').forEach(r => r.addEventListener('change', syncPay));
+
+/* ========================================================= delivery: distancia y costo */
+const delivery = { loc: null, km: null, fee: null, approx: false, loading: false, outOfRange: false };
+let routeToken = 0, map = null, clientMarker = null;
+
+function haversineKm(a, b) {
+  const R = 6371, toR = x => x * Math.PI / 180;
+  const dLat = toR(b.lat - a.lat), dLng = toR(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toR(a.lat)) * Math.cos(toR(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+async function drivingKm(a, b) {
+  // distancia real por calle (OSRM); si falla, línea recta x 1,3 como estimación
+  try {
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 7000);
+    const r = await fetch(`https://router.project-osrm.org/route/v1/driving/${a.lng},${a.lat};${b.lng},${b.lat}?overview=false`, { signal: ctrl.signal });
+    clearTimeout(t);
+    const j = await r.json();
+    if (j.code === 'Ok' && j.routes && j.routes[0]) return { km: j.routes[0].distance / 1000, approx: false };
+  } catch (e) {}
+  return { km: haversineKm(a, b) * 1.3, approx: true };
+}
+// se cobra por kilómetro entero empezado (ej: 3,2 km → 4 km)
+const billableKm = km => Math.max(1, Math.ceil(km));
+function feeFor(km) {
+  return Math.max(DELIVERY.minFee, billableKm(km) * DELIVERY.pricePerKm);
+}
+async function setLocation(lat, lng, opts = {}) {
+  delivery.loc = { lat: +lat.toFixed(6), lng: +lng.toFixed(6) };
+  if (map) {
+    if (!clientMarker) {
+      clientMarker = L.marker([lat, lng], { draggable: true }).addTo(map);
+      clientMarker.on('dragend', () => { const p = clientMarker.getLatLng(); setLocation(p.lat, p.lng); });
+    } else clientMarker.setLatLng([lat, lng]);
+    if (opts.fly) map.flyTo([lat, lng], 16, { duration: 0.8 });
+  }
+  const token = ++routeToken;
+  delivery.loading = true; renderTotals();
+  const { km, approx } = await drivingKm(STORE, delivery.loc);
+  if (token !== routeToken) return;
+  delivery.loading = false;
+  delivery.km = km; delivery.approx = approx;
+  delivery.outOfRange = km > DELIVERY.maxKm;
+  delivery.fee = delivery.outOfRange ? null : feeFor(km);
+  saveCustomer(); renderTotals();
+}
+
+function initMap() {
+  if (map || typeof L === 'undefined') { if (typeof L === 'undefined') $('#deliveryMap').classList.add('unavailable'); else map.invalidateSize(); return; }
+  map = L.map('deliveryMap', { scrollWheelZoom: false }).setView([STORE.lat, STORE.lng], 13);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+  L.marker([STORE.lat, STORE.lng], {
+    icon: L.divIcon({ className: '', html: '<div class="store-pin"><i class="fa-solid fa-burger"></i></div>', iconSize: [34, 34], iconAnchor: [17, 17] })
+  }).addTo(map).bindTooltip('Black Burger');
+  map.on('click', e => setLocation(e.latlng.lat, e.latlng.lng));
+  if (delivery.loc) { setLocation(delivery.loc.lat, delivery.loc.lng); map.setView([delivery.loc.lat, delivery.loc.lng], 15); }
+}
+
+/* GPS */
+$('#btnGeo').addEventListener('click', () => {
+  const btn = $('#btnGeo');
+  if (!navigator.geolocation) { toast('Tu navegador no permite ubicación'); return; }
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando…';
+  navigator.geolocation.getCurrentPosition(async pos => {
+    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Usar mi ubicación';
+    initMap();
+    setLocation(pos.coords.latitude, pos.coords.longitude, { fly: true });
+    if (!F.address.value.trim()) {
+      try {
+        const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&accept-language=es&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+        const j = await r.json(); const a = j.address || {};
+        const txt = [a.road && (a.road + (a.house_number ? ' ' + a.house_number : '')), a.suburb || a.neighbourhood].filter(Boolean).join(', ');
+        if (txt && !F.address.value.trim()) { F.address.value = txt; saveCustomer(); }
+      } catch (e) {}
+    }
+  }, err => {
+    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-location-crosshairs"></i> Usar mi ubicación';
+    toast(err.code === 1 ? 'Permiso de ubicación denegado' : 'No pudimos obtener tu ubicación');
+  }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+});
+
+/* búsqueda por dirección escrita (dentro del Gran Catamarca) */
+$('#btnSearch').addEventListener('click', async () => {
+  const q = F.address.value.trim();
+  if (!q) { F.address.classList.add('invalid'); F.address.focus(); toast('Escribí tu dirección primero'); return; }
+  const btn = $('#btnSearch');
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando…';
+  try {
+    const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=ar&accept-language=es&viewbox=-65.90,-28.33,-65.60,-28.62&bounded=1&q=${encodeURIComponent(q + ', Catamarca')}`;
+    const j = await (await fetch(url)).json();
+    if (j[0]) { initMap(); setLocation(+j[0].lat, +j[0].lon, { fly: true }); toast('Revisá que el pin esté en tu casa'); }
+    else toast('No la encontramos: marcala tocando el mapa');
+  } catch (e) { toast('No se pudo buscar: marcala en el mapa'); }
+  btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-magnifying-glass-location"></i> Buscar dirección';
+});
+
+/* ========================================================= totales */
+function renderTotals() {
+  const sub = subtotal(), isDel = mode() === 'delivery';
+  const info = $('#deliveryInfo');
+  let ship = 0, shipTxt = '—', label = 'Envío';
+  info.classList.remove('warn');
+  if (!isDel) { shipTxt = 'Sin cargo'; label = 'Retiro en local'; }
+  else if (delivery.loading) { shipTxt = 'Calculando…'; info.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>Calculando distancia…</span>'; }
+  else if (delivery.outOfRange) {
+    shipTxt = 'A consultar'; info.classList.add('warn');
+    info.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>Estás a ${delivery.km.toFixed(1).replace('.', ',')} km: fuera de nuestra zona habitual. Te confirmamos el envío por WhatsApp.</span>`;
+  } else if (delivery.fee != null) {
+    ship = delivery.fee; shipTxt = fmt(ship);
+    label = `Envío (${billableKm(delivery.km)} km)`;
+    info.innerHTML = `<i class="fa-solid fa-route"></i> <span>Distancia ${delivery.approx ? 'estimada' : 'por calle'}: ${delivery.km.toFixed(1).replace('.', ',')} km → se cobran <b>${billableKm(delivery.km)} km</b> × ${fmt(DELIVERY.pricePerKm)} = <b>${fmt(ship)}</b></span>`;
+  } else {
+    shipTxt = 'Marcá tu ubicación';
+    info.innerHTML = `<i class="fa-solid fa-route"></i> <span>Marcá tu ubicación para calcular el envío (${fmt(DELIVERY.pricePerKm)} por km).</span>`;
+  }
+  $('#sumSubtotal').textContent = fmt(sub) + (hasUnpriced() ? ' + postres' : '');
+  $('#sumShipLabel').textContent = label;
+  $('#sumShip').textContent = shipTxt;
+  $('#sumTotal').textContent = fmt(sub + ship) + (hasUnpriced() ? ' *' : '');
+}
+
+/* ========================================================= enviar a WhatsApp */
+$('#sendBtn').addEventListener('click', () => {
+  const err = $('#formError'); err.hidden = true;
+  const isDel = mode() === 'delivery';
+  const missing = [];
+  if (!F.name.value.trim()) { F.name.classList.add('invalid'); missing.push('tu nombre'); }
+  if (isDel && !F.address.value.trim()) { F.address.classList.add('invalid'); missing.push('tu dirección'); }
+  if (missing.length) { err.textContent = 'Completá ' + missing.join(' y ') + '.'; err.hidden = false; return; }
+  if (isDel && delivery.loading) { err.textContent = 'Esperá un segundo, estamos calculando el envío…'; err.hidden = false; return; }
+
+  const sub = subtotal();
+  const ship = isDel && delivery.fee != null ? delivery.fee : 0;
+  const L1 = [];
+  L1.push('🍔 *NUEVO PEDIDO — BLACK BURGER*', '');
+  L1.push(`👤 *Cliente:* ${F.name.value.trim()}`, '');
+  L1.push('*Detalle:*');
+  cart.forEach(l => {
+    const i = lineInfo(l);
+    L1.push(`• ${l.qty}x ${i.name}${i.variant ? ' (' + i.variant + ')' : ''} — ${i.price == null ? 'precio a confirmar' : fmt(i.price * l.qty)}`);
+  });
+  L1.push('', `Subtotal: ${fmt(sub)}`);
+  if (isDel) {
+    if (delivery.fee != null) L1.push(`Envío (${delivery.km.toFixed(1).replace('.', ',')} km${delivery.approx ? ' aprox.' : ''} → ${billableKm(delivery.km)} km × ${fmt(DELIVERY.pricePerKm)}): ${fmt(ship)}`);
+    else L1.push('Envío: a confirmar');
+  }
+  L1.push(`*TOTAL: ${fmt(sub + ship)}*${hasUnpriced() ? ' + postres a confirmar' : ''}${isDel && delivery.fee == null ? ' + envío' : ''}`, '');
+  if (isDel) {
+    L1.push('🛵 *Delivery*');
+    L1.push(`📍 ${F.address.value.trim()}`);
+    if (F.ref.value.trim()) L1.push(`🏠 Ref: ${F.ref.value.trim()}`);
+    if (delivery.loc) L1.push(`🗺️ https://maps.google.com/?q=${delivery.loc.lat},${delivery.loc.lng}`);
+  } else {
+    L1.push('🏪 *Retiro en el local*');
+  }
+  L1.push('', `💳 *Pago:* ${pay()}${pay() === 'Efectivo' && F.cash.value.trim() ? ' — abona con $' + F.cash.value.trim().replace(/^\$/, '') : ''}`);
+  if (F.notes.value.trim()) L1.push(`📝 *Aclaraciones:* ${F.notes.value.trim()}`);
+
+  const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(L1.join('\n'))}`;
+  const w = window.open(url, '_blank');
+  if (!w) location.href = url;
+});
+
+/* ========================================================= init */
+if (customer.loc) delivery.loc = customer.loc;
+syncMode(); syncPay(); renderCart();
+if (delivery.loc && mode() === 'delivery') setLocation(delivery.loc.lat, delivery.loc.lng);
 </script>
 
 </body>
