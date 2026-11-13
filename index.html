@@ -234,6 +234,8 @@
     .footer-bottom-links { display: flex; gap: 1.5rem; }
     .footer-bottom-links a { font-family: var(--font-condensed); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gray-3); transition: color 0.2s; display: flex; align-items: center; gap: 0.3rem; }
     .footer-bottom-links a:hover { color: var(--gold); }
+    .footer-bottom-links .dev-credit strong { color: var(--gold); font-weight: 700; letter-spacing: 0.1em; }
+    .footer-bottom-links { flex-wrap: wrap; }
     .scroll-top { position: fixed; bottom: 2rem; right: 2rem; width: 44px; height: 44px; background: var(--gold); color: var(--black); border: none; border-radius: 2px; font-size: 0.9rem; cursor: pointer; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; z-index: 99; display: flex; align-items: center; justify-content: center; }
     .scroll-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
     .scroll-top:hover { background: var(--white); }
@@ -692,6 +694,7 @@
       <div class="footer-bottom-links">
         <a href="#"><i class="fa-solid fa-shield"></i> Privacidad</a>
         <a href="#"><i class="fa-solid fa-file-lines"></i> Términos</a>
+        <a href="https://www.devhub.com.ar" target="_blank" rel="noopener" class="dev-credit"><i class="fa-solid fa-code"></i> Desarrollado por <strong>DevHub</strong></a>
       </div>
     </div>
   </div>
